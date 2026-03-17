@@ -7,15 +7,19 @@ const NEXT_DIR = path.join(process.cwd(), '.next');
 const APP_MANIFEST_FILE = path.join(NEXT_DIR, 'app-build-manifest.json');
 const BUILD_MANIFEST_FILE = path.join(NEXT_DIR, 'build-manifest.json');
 
-async function readJson(file) {
+async function readJson(file: string): Promise<Record<string, unknown>> {
   const raw = await fs.readFile(file, 'utf8');
-  return JSON.parse(raw);
+  return JSON.parse(raw) as Record<string, unknown>;
 }
 
-function selectIntroFiles(appManifest, buildManifest) {
-  const appFiles = appManifest?.pages?.['/page'] ?? [];
+function selectIntroFiles(
+  appManifest: Record<string, unknown>,
+  _buildManifest: Record<string, unknown>,
+): string[] {
+  const pages = appManifest?.pages as Record<string, unknown> | undefined;
+  const appFiles: unknown[] = (pages?.['/page'] as unknown[]) ?? [];
 
-  const toFsPath = (file) => {
+  const toFsPath = (file: string) => {
     const normalized = file
       .replace(/^\/_next\//, '')
       .replace(/^_next\//, '')
@@ -24,14 +28,14 @@ function selectIntroFiles(appManifest, buildManifest) {
   };
 
   const candidateFiles = [...appFiles]
-    .filter((file) => typeof file === 'string')
+    .filter((file): file is string => typeof file === 'string')
     .filter((file) => file.endsWith('.js'))
-    .map((file) => toFsPath(file));
+    .map(toFsPath);
 
   return [...new Set(candidateFiles)];
 }
 
-async function main() {
+async function main(): Promise<void> {
   try {
     await fs.access(APP_MANIFEST_FILE);
     await fs.access(BUILD_MANIFEST_FILE);

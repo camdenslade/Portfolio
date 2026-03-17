@@ -9,7 +9,7 @@
     "build:hosting": "next build",
     "deploy:hosting": "firebase deploy --only hosting",
     "lint": "next lint",
-    "check:intro-budget": "node scripts/check-intro-budget.mjs"
+    "check:intro-budget": "tsx scripts/check-intro-budget.ts"
   },
   "dependencies": {
     "@react-three/drei": "^9.121.4",
@@ -30,6 +30,7 @@
     "autoprefixer": "^10.4.20",
     "postcss": "^8.5.1",
     "tailwindcss": "^3.4.17",
+    "tsx": "^4.21.0",
     "typescript": "^5.7.3"
   }
 }

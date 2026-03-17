@@ -4,7 +4,7 @@ import { GlobalWorkerOptions, getDocument, type PDFDocumentProxy } from 'pdfjs-d
 import type { Annotation, FormFieldValue, PDFSession, SessionDraftV1, SessionPage, SourcePDF } from '../types/pdf';
 import { indicesFromRanges, parseRanges } from '../utils/ranges';
 
-if (typeof window !== 'undefined' && !GlobalWorkerOptions.workerSrc) {
+if (typeof window !== 'undefined') {
   GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
 }
 
@@ -536,6 +536,25 @@ export const usePdfSession = () => {
             end: { x: tipX, y: tipY },
             thickness: sw,
             color
+          });
+        } else if (annotation.type === 'textEdit' && annotation.text) {
+          // Cover original text with a white rectangle
+          copiedPage.drawRectangle({
+            x: x - 1,
+            y: y - 2,
+            width: width + 2,
+            height: height + 4,
+            color: rgb(1, 1, 1),
+            borderWidth: 0,
+          });
+          // Draw replacement text. fontSize is stored as unscaled PDF points (cssPx / zoom).
+          const fontSize = annotation.fontSize ?? 12;
+          copiedPage.drawText(annotation.text, {
+            x,
+            y: y + height * 0.1,
+            size: fontSize,
+            color: annotation.color ? parseColor(annotation.color) : rgb(0, 0, 0),
+            maxWidth: width + 20,
           });
         } else if (annotation.type === 'freehand' && annotation.points && annotation.points.length > 1) {
           for (let i = 1; i < annotation.points.length; i++) {

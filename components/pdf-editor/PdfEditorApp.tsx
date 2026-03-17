@@ -48,6 +48,7 @@ export const PdfEditorApp = () => {
   const [annotationMode, setAnnotationMode] = useState<AnnotationType | null>(null);
   const [annotationColor, setAnnotationColor] = useState('#ff0000');
   const [annotationStrokeWidth, setAnnotationStrokeWidth] = useState(2);
+  const [annotationToolbarVisible, setAnnotationToolbarVisible] = useState(true);
   const [status, setStatus] = useState('Ready');
   const [zoom, setZoom] = useState(1.25);
   const [searchVisible, setSearchVisible] = useState(false);
@@ -55,6 +56,10 @@ export const PdfEditorApp = () => {
   const [searchCurrentMatch, setSearchCurrentMatch] = useState(-1);
   const [sidebarMode, setSidebarMode] = useState<'thumbnails' | 'bookmarks'>('thumbnails');
   const [contextMenu, setContextMenu] = useState<{ x: number; y: number; pageIndex: number } | null>(null);
+  const [isStackedLayout, setIsStackedLayout] = useState(false);
+  const [stackedSidebarHeight, setStackedSidebarHeight] = useState(140);
+  const [isDraggingSidebar, setIsDraggingSidebar] = useState(false);
+  const shouldUseStackedLayout = isStackedLayout;
 
   // Tab state
   const initialTabId = useRef(newTabId()).current;
@@ -64,6 +69,7 @@ export const PdfEditorApp = () => {
   const tabSnapshots = useRef<Map<string, any>>(new Map());
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const workspaceRef = useRef<HTMLDivElement>(null);
   const pickerModeRef = useRef<LoadMode>('replace');
   const exportRef = useRef<() => Promise<void>>(async () => undefined);
   const viewerRef = useRef<PDFViewerHandle>(null);
@@ -255,6 +261,36 @@ export const PdfEditorApp = () => {
     [setCurrentPage]
   );
 
+  const onPrevPage = useCallback(() => {
+    if (currentPageIndex > 0) {
+      setCurrentPage(currentPageIndex - 1);
+      viewerRef.current?.scrollToPage(currentPageIndex - 1);
+    }
+  }, [currentPageIndex, setCurrentPage]);
+
+  const onNextPage = useCallback(() => {
+    if (currentPageIndex < session.pages.length - 1) {
+      setCurrentPage(currentPageIndex + 1);
+      viewerRef.current?.scrollToPage(currentPageIndex + 1);
+    }
+  }, [currentPageIndex, session.pages.length, setCurrentPage]);
+
+  const onGoToPage = useCallback(
+    (pageIndex: number) => {
+      const clamped = Math.max(0, Math.min(session.pages.length - 1, pageIndex));
+      setCurrentPage(clamped);
+      viewerRef.current?.scrollToPage(clamped);
+    },
+    [session.pages.length, setCurrentPage]
+  );
+
+  const handleToggleAnnotations = useCallback(() => {
+    setAnnotationToolbarVisible((v) => {
+      if (v) setAnnotationMode(null);
+      return !v;
+    });
+  }, []);
+
   exportRef.current = onExport;
 
   // Keyboard shortcuts
@@ -362,9 +398,42 @@ export const PdfEditorApp = () => {
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [currentPageIndex, setCurrentPage, onZoomIn, onZoomOut, onZoomSet, tabs.length, activeTabId, closeTab, annotationMode, searchVisible, session.pages.length]);
 
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(max-width: 820px)');
+    const syncLayout = () => setIsStackedLayout(mediaQuery.matches);
+    syncLayout();
+    mediaQuery.addEventListener('change', syncLayout);
+    return () => mediaQuery.removeEventListener('change', syncLayout);
+  }, []);
+
+  useEffect(() => {
+    if (!isDraggingSidebar || !shouldUseStackedLayout) return;
+
+    const onPointerMove = (event: PointerEvent) => {
+      const workspace = workspaceRef.current;
+      if (!workspace) return;
+      const rect = workspace.getBoundingClientRect();
+      const nextHeight = event.clientY - rect.top;
+      setStackedSidebarHeight(Math.max(96, Math.min(320, Math.round(nextHeight))));
+    };
+
+    const onPointerUp = () => setIsDraggingSidebar(false);
+
+    window.addEventListener('pointermove', onPointerMove);
+    window.addEventListener('pointerup', onPointerUp);
+    return () => {
+      window.removeEventListener('pointermove', onPointerMove);
+      window.removeEventListener('pointerup', onPointerUp);
+    };
+  }, [isDraggingSidebar, shouldUseStackedLayout]);
+
   return (
     <div className="pdf-editor-root">
-      <div className="app" onDragOver={(event) => event.preventDefault()} onDrop={onDrop}>
+      <div
+        className="app"
+        onDragOver={(event) => event.preventDefault()}
+        onDrop={onDrop}
+      >
         <input
           ref={fileInputRef}
           type="file"
@@ -377,10 +446,11 @@ export const PdfEditorApp = () => {
           canUndo={canUndo}
           hasPages={session.pages.length > 0}
           zoom={zoom}
+          currentPage={currentPageIndex}
+          totalPages={session.pages.length}
+          annotationsVisible={annotationToolbarVisible}
           onOpen={onOpen}
           onMerge={onMerge}
-          onNewSession={onNewSession}
-          onSplit={onSplit}
           onDeletePage={onDeletePage}
           onRotateCW={() => rotatePage(currentPageIndex, 90)}
           onRotateCCW={() => rotatePage(currentPageIndex, -90)}
@@ -389,6 +459,10 @@ export const PdfEditorApp = () => {
           onZoomIn={onZoomIn}
           onZoomOut={onZoomOut}
           onZoomSet={onZoomSet}
+          onPrevPage={onPrevPage}
+          onNextPage={onNextPage}
+          onGoToPage={onGoToPage}
+          onToggleAnnotations={handleToggleAnnotations}
         />
 
         <TabBar tabs={tabs} activeTabId={activeTabId} onSelectTab={switchToTab} onCloseTab={closeTab} />
@@ -402,7 +476,15 @@ export const PdfEditorApp = () => {
           onNavigateToPage={handleSearchNavigate}
         />
 
-        <div className="workspace">
+        <div
+          ref={workspaceRef}
+          className="workspace"
+          style={
+            shouldUseStackedLayout
+              ? ({ ['--stacked-sidebar-height' as string]: `${stackedSidebarHeight}px` } as Record<string, string>)
+              : undefined
+          }
+        >
           {session.pages.length === 0 ? (
             <WelcomeScreen onOpen={onOpen} />
           ) : (
@@ -438,12 +520,22 @@ export const PdfEditorApp = () => {
                   />
                 )}
               </aside>
+              {shouldUseStackedLayout && (
+                <div
+                  className="sidebar-resizer"
+                  onPointerDown={(event) => {
+                    event.preventDefault();
+                    setIsDraggingSidebar(true);
+                  }}
+                />
+              )}
 
               <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minWidth: 0, minHeight: 0 }}>
                 <AnnotationToolbar
                   activeMode={annotationMode}
                   color={annotationColor}
                   strokeWidth={annotationStrokeWidth}
+                  visible={annotationToolbarVisible}
                   onSetMode={setAnnotationMode}
                   onSetColor={setAnnotationColor}
                   onSetStrokeWidth={setAnnotationStrokeWidth}
@@ -460,6 +552,7 @@ export const PdfEditorApp = () => {
                   onPageChange={handlePageChange}
                   onCreateAnnotation={(pageIndex, annotation) => addAnnotation(pageIndex, annotation)}
                   onFormFieldChange={setFormFieldValue}
+
                 />
               </div>
             </>

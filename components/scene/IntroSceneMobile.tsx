@@ -3,44 +3,41 @@
 import { OrbitControls } from '@react-three/drei';
 import { useThree } from '@react-three/fiber';
 import gsap from 'gsap';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { Vector3 } from 'three';
+import type { MutableRefObject } from 'react';
 import type { PerspectiveCamera } from 'three';
 
 import { animateCamera, type CameraTarget } from '@/lib/three/cameraAnim';
 import { usePrefersReducedMotion } from '@/lib/three/motion';
-import { useIntroController } from './useIntroController';
-import { ComputerModel } from './ComputerModel';
-import { FakeChromeWindow, type ViewState } from '@/components/ui/FakeChromeWindow';
-
-const SCREEN_W = 950;
-const SCREEN_H = 620;
+import type { IntroController } from './useIntroController';
+import { IphoneModel, IPHONE_SCREEN_PX } from './IphoneModel';
+import { FakeSafariWindow } from '@/components/ui/FakeSafariWindow';
 
 const CAMERA_TARGETS: Record<'FOCUS_SCREEN' | 'ENTER_SCREEN', CameraTarget> = {
   FOCUS_SCREEN: {
-    position: { x: 0, y: 0.9, z: 1.78 },
-    lookAt: { x: 0, y: 0.33, z: -0.38 },
+    position: { x: -2.5, y: -0.175, z: 0 },
+    lookAt: { x: -0.04, y: -0.175, z: 0 },
   },
   ENTER_SCREEN: {
-    position: { x: 0, y: 0.9, z: 1.78 },
-    lookAt: { x: 0, y: 0.33, z: -0.38 },
+    position: { x: -2.5, y: -0.175, z: 0 },
+    lookAt: { x: -0.04, y: -0.175, z: 0 },
   },
 };
 
-export function IntroScene() {
+type Props = {
+  controller: IntroController;
+  backOutRef: MutableRefObject<(() => void) | null>;
+  isBackingOut: boolean;
+};
+
+export function IntroSceneMobile({ controller, backOutRef, isBackingOut }: Props) {
   const { camera } = useThree();
   const reducedMotion = usePrefersReducedMotion();
   const timelineRef = useRef<gsap.core.Timeline | null>(null);
   const browserShellRef = useRef<HTMLDivElement | null>(null);
-  const [browserView, setBrowserView] = useState<ViewState>('google');
   const initialTargetRef = useRef<CameraTarget | null>(null);
-  const {
-    cameraState,
-    showFakeChrome,
-    startFocusFlow,
-    setCameraState,
-    setShowFakeChrome,
-  } = useIntroController();
+  const { cameraState, showFakeChrome, startFocusFlow, setCameraState, setShowFakeChrome } = controller;
 
   useEffect(() => {
     if (initialTargetRef.current) return;
@@ -48,11 +45,7 @@ export function IntroScene() {
     const direction = perspectiveCamera.getWorldDirection(new Vector3());
     const lookPoint = perspectiveCamera.position.clone().add(direction.multiplyScalar(1.5));
     initialTargetRef.current = {
-      position: {
-        x: perspectiveCamera.position.x,
-        y: perspectiveCamera.position.y,
-        z: perspectiveCamera.position.z,
-      },
+      position: { x: perspectiveCamera.position.x, y: perspectiveCamera.position.y, z: perspectiveCamera.position.z },
       lookAt: { x: lookPoint.x, y: lookPoint.y, z: lookPoint.z },
     };
   }, [camera]);
@@ -61,25 +54,17 @@ export function IntroScene() {
     const perspectiveCamera = camera as PerspectiveCamera;
     const initialTarget = initialTargetRef.current;
     if (!initialTarget) return;
-
     timelineRef.current?.kill();
     timelineRef.current = animateCamera(perspectiveCamera, initialTarget, reducedMotion, () => {
       setShowFakeChrome(false);
       setCameraState('IDLE');
     });
-    if (browserShellRef.current) {
-      gsap.killTweensOf(browserShellRef.current);
-      timelineRef.current.to(
-        browserShellRef.current,
-        {
-          opacity: 0,
-          duration: reducedMotion ? 0.01 : 0.22,
-          ease: 'power2.out',
-        },
-        0
-      );
-    }
   }, [camera, reducedMotion, setCameraState, setShowFakeChrome]);
+
+  // Expose handleBackOut to the parent DOM overlay
+  useEffect(() => {
+    backOutRef.current = handleBackOut;
+  }, [handleBackOut, backOutRef]);
 
   const handleOutsideScreenClick = useCallback(() => {
     if (cameraState !== 'ENTER_SCREEN') return;
@@ -88,7 +73,6 @@ export function IntroScene() {
 
   useEffect(() => {
     if (cameraState !== 'FOCUS_SCREEN') return;
-
     const perspectiveCamera = camera as PerspectiveCamera;
     timelineRef.current?.kill();
     setShowFakeChrome(true);
@@ -96,24 +80,18 @@ export function IntroScene() {
       perspectiveCamera,
       CAMERA_TARGETS.FOCUS_SCREEN,
       reducedMotion,
-      () => {
-        setCameraState('ENTER_SCREEN');
-      }
+      () => { setCameraState('ENTER_SCREEN'); }
     );
 
     const rafId = requestAnimationFrame(() => {
       if (!browserShellRef.current || !timelineRef.current) return;
       gsap.killTweensOf(browserShellRef.current);
       gsap.set(browserShellRef.current, { opacity: reducedMotion ? 1 : 0 });
-      timelineRef.current.to(
-        browserShellRef.current,
-        {
-          opacity: 1,
-          duration: reducedMotion ? 0.01 : 0.22,
-          ease: 'power2.out',
-        },
-        0
-      );
+      timelineRef.current.to(browserShellRef.current, {
+        opacity: 1,
+        duration: reducedMotion ? 0.01 : 0.22,
+        ease: 'power2.out',
+      }, 0);
     });
 
     return () => cancelAnimationFrame(rafId);
@@ -131,42 +109,40 @@ export function IntroScene() {
     };
   }, []);
 
+  const W = IPHONE_SCREEN_PX.w;
+  const H = IPHONE_SCREEN_PX.h;
+
+  // 3D overlay: always visible for visual continuity during zoom-in.
+  // In ENTER_SCREEN the native DOM overlay in IntroCanvasMobile sits on top
+  // and handles all interaction, so this is non-interactive then.
   const screenOverlay = (
     <div
       style={{
-        width: `${SCREEN_W}px`,
-        height: `${SCREEN_H}px`,
-        pointerEvents: cameraState === 'ENTER_SCREEN' ? 'auto' : 'none',
+        width: `${W}px`,
+        height: `${H}px`,
+        pointerEvents: 'none',
         overflow: 'hidden',
         position: 'relative',
-        backgroundImage: 'url(/wallpaper-tahoe.jpg)',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        // Rounded rect CW + notch CCW = nonzero fill punches notch hole
-        // Notch: 100px wide centred at 475, 16px tall, bottom corners r=8
-        clipPath: `path('M16 0 H934 A16 16 0 0 1 950 16 V620 H0 V16 A16 16 0 0 1 16 0 Z M525 0 H425 V8 A8 8 0 0 0 433 16 H517 A8 8 0 0 0 525 8 V0 Z')`,
+        borderRadius: '60px',
       }}
     >
-      {showFakeChrome && (
-        <div
-          ref={browserShellRef}
-          style={{
-            position: 'absolute',
-            inset: 0,
-            width: `${SCREEN_W}px`,
-            height: `${SCREEN_H}px`,
-            pointerEvents: cameraState === 'ENTER_SCREEN' ? 'auto' : 'none',
-            overflow: 'hidden',
-          }}
-        >
-          <FakeChromeWindow
-            onBack={handleBackOut}
-            compact
-            initialView={browserView}
-            onViewChange={setBrowserView}
-          />
-        </div>
-      )}
+      <div
+        ref={browserShellRef}
+        style={{
+          position: 'absolute',
+          inset: 0,
+          width: `${W}px`,
+          height: `${H}px`,
+          overflow: 'hidden',
+          borderRadius: '60px',
+          clipPath: `path('M0 0 H${W} V${H} H0 Z M231 23 H159 A14 14 0 0 0 145 37 A14 14 0 0 0 159 51 H231 A14 14 0 0 0 245 37 A14 14 0 0 0 231 23 Z')`,
+          // Hidden during ENTER_SCREEN so the DOM overlay is the only thing visible;
+          // revealed when backing out so it shows through as the DOM overlay shrinks
+          visibility: cameraState === 'ENTER_SCREEN' && !isBackingOut ? 'hidden' : 'visible',
+        }}
+      >
+        <FakeSafariWindow onBack={handleBackOut} />
+      </div>
     </div>
   );
 
@@ -184,18 +160,12 @@ export function IntroScene() {
         }}
       >
         <planeGeometry args={[40, 24]} />
-        <meshBasicMaterial
-          transparent
-          opacity={0}
-          depthWrite={false}
-          depthTest={false}
-          colorWrite={false}
-        />
+        <meshBasicMaterial transparent opacity={0} depthWrite={false} depthTest={false} colorWrite={false} />
       </mesh>
 
-      <ComputerModel
+      <IphoneModel
         onScreenClick={startFocusFlow}
-        onOutsideScreenClick={handleOutsideScreenClick}
+        onOutsideScreenClick={cameraState === 'IDLE' ? startFocusFlow : handleOutsideScreenClick}
         screenOverlay={screenOverlay}
         floatEnabled={cameraState === 'IDLE'}
       />

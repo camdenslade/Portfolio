@@ -57,6 +57,7 @@ export const PDFViewer = forwardRef<PDFViewerHandle, PDFViewerProps>(
     const renderTaskIds = useRef<Map<number, number>>(new Map());
     const formFieldsCache = useRef<Map<number, FormField[]>>(new Map());
     const formLayerRefs = useRef<Map<number, HTMLDivElement>>(new Map());
+    const [pdfBuiltinRotations, setPdfBuiltinRotations] = useState<Map<number, number>>(new Map());
 
     // Drawing state for drag-to-create
     const [drawingState, setDrawingState] = useState<{
@@ -66,6 +67,18 @@ export const PDFViewer = forwardRef<PDFViewerHandle, PDFViewerProps>(
       currentX: number;
       currentY: number;
       points: Array<{ x: number; y: number }>;
+    } | null>(null);
+
+    // Inline text-edit state
+    const [textEditState, setTextEditState] = useState<{
+      pageIndex: number;
+      text: string;
+      originalText: string;
+      relX: number;
+      relY: number;
+      relW: number;
+      relH: number;
+      fontSize: number; // unscaled PDF points (cssPx / zoom)
     } | null>(null);
 
     const scrollToPage = useCallback((pageIndex: number) => {
@@ -191,7 +204,16 @@ export const PDFViewer = forwardRef<PDFViewerHandle, PDFViewerProps>(
           const canvas = canvasRefs.current.get(idx);
           if (!canvas) return;
 
-          const viewport = pdfPage.getViewport({ scale: zoom });
+          // Strip built-in page rotation from canvas rendering; apply via CSS instead.
+          // Canvas 2D context rotation can break in CSS3D transform contexts (e.g. Three.js Html).
+          const builtinRotate = pdfPage.rotate || 0;
+          setPdfBuiltinRotations((prev) => {
+            if (prev.get(idx) === builtinRotate) return prev;
+            const next = new Map(prev);
+            next.set(idx, builtinRotate);
+            return next;
+          });
+          const viewport = pdfPage.getViewport({ scale: zoom, rotation: -builtinRotate });
           canvas.width = viewport.width;
           canvas.height = viewport.height;
 
@@ -343,8 +365,69 @@ export const PDFViewer = forwardRef<PDFViewerHandle, PDFViewerProps>(
       setDrawingState(null);
     };
 
+    const handleTextLayerClick = useCallback((event: React.MouseEvent<HTMLDivElement>, idx: number) => {
+      if (annotationMode !== 'textEdit') return;
+
+      const target = event.target as HTMLElement;
+      const span = target.tagName === 'SPAN' ? target as HTMLSpanElement : target.closest('span') as HTMLSpanElement | null;
+      if (!span || !span.textContent?.trim()) return;
+
+      const pageEl = pageRefs.current.get(idx);
+      if (!pageEl) return;
+      const canvasWrap = pageEl.querySelector('.viewer-canvas-wrap') as HTMLElement | null;
+      if (!canvasWrap) return;
+
+      const spanRect = span.getBoundingClientRect();
+      const wrapRect = canvasWrap.getBoundingClientRect();
+      if (wrapRect.width === 0 || wrapRect.height === 0) return;
+
+      const relX = Math.max(0, (spanRect.left - wrapRect.left) / wrapRect.width);
+      const relY = Math.max(0, (spanRect.top - wrapRect.top) / wrapRect.height);
+      const relW = Math.max(spanRect.width / wrapRect.width, 0.05);
+      const relH = Math.max(spanRect.height / wrapRect.height, 0.02);
+
+      const cssFontSize = parseFloat(window.getComputedStyle(span).fontSize) || 12;
+
+      setTextEditState({
+        pageIndex: idx,
+        text: span.textContent ?? '',
+        originalText: span.textContent ?? '',
+        relX,
+        relY,
+        relW,
+        relH,
+        fontSize: cssFontSize / zoom,
+      });
+
+      event.stopPropagation();
+    }, [annotationMode, zoom]);
+
+    const confirmTextEdit = useCallback(() => {
+      if (!textEditState) return;
+      const { pageIndex, text, originalText, relX, relY, relW, relH, fontSize } = textEditState;
+      if (text !== originalText) {
+        onCreateAnnotation(pageIndex, {
+          type: 'textEdit',
+          x: relX,
+          y: relY,
+          width: relW,
+          height: relH,
+          text,
+          originalText,
+          fontSize,
+          color: '#000000',
+        });
+      }
+      setTextEditState(null);
+    }, [textEditState, onCreateAnnotation]);
+
+    const cancelTextEdit = useCallback(() => {
+      setTextEditState(null);
+    }, []);
+
     const handleClick = (event: React.MouseEvent, idx: number) => {
       if (!annotationMode) return;
+      if (annotationMode === 'textEdit') return;
       if (!CLICK_ANNOTATION_TYPES.includes(annotationMode)) return;
 
       const pos = getRelativePos(event, event.currentTarget as HTMLElement);
@@ -556,6 +639,23 @@ export const PDFViewer = forwardRef<PDFViewerHandle, PDFViewerProps>(
         );
       }
 
+      if (annotation.type === 'textEdit') {
+        return (
+          <div key={annotation.id} className="annotation annotation-text-edit" style={baseStyle}>
+            <div className="text-edit-cover" />
+            <span
+              className="text-edit-content"
+              style={{
+                fontSize: annotation.fontSize ? annotation.fontSize * zoom : undefined,
+                color: annotation.color ?? '#000000',
+              }}
+            >
+              {annotation.text}
+            </span>
+          </div>
+        );
+      }
+
       // Default: highlight / note
       return (
         <div
@@ -745,7 +845,8 @@ export const PDFViewer = forwardRef<PDFViewerHandle, PDFViewerProps>(
         <div className="viewer-scroll-content">
           {pages.map((page, idx) => {
             const size = getPageSize(idx);
-            const rotation = page.rotation ?? 0;
+            const builtinRotate = pdfBuiltinRotations.get(idx) || 0;
+            const rotation = (((page.rotation ?? 0) + builtinRotate) % 360 + 360) % 360;
             const isSwapped = rotation === 90 || rotation === 270;
             const outerW = isSwapped ? size.height : size.width;
             const outerH = isSwapped ? size.width : size.height;
@@ -789,7 +890,8 @@ export const PDFViewer = forwardRef<PDFViewerHandle, PDFViewerProps>(
                       if (el) textLayerRefs.current.set(idx, el);
                       else textLayerRefs.current.delete(idx);
                     }}
-                    className="textLayer"
+                    className={`textLayer${annotationMode === 'textEdit' ? ' text-edit-mode' : ''}`}
+                    onClick={annotationMode === 'textEdit' ? (e) => handleTextLayerClick(e, idx) : undefined}
                   />
                   <div
                     ref={(el) => {
@@ -803,6 +905,33 @@ export const PDFViewer = forwardRef<PDFViewerHandle, PDFViewerProps>(
                   <div className="annotation-layer">
                     {page.annotations.map(renderAnnotation)}
                     {renderDrawPreview(idx)}
+                    {textEditState?.pageIndex === idx && (
+                      <div
+                        className="text-edit-editor"
+                        style={{
+                          position: 'absolute',
+                          left: `${textEditState.relX * 100}%`,
+                          top: `${textEditState.relY * 100}%`,
+                          width: `${textEditState.relW * 100}%`,
+                          minHeight: `${textEditState.relH * 100}%`,
+                          zIndex: 20,
+                        }}
+                      >
+                        <textarea
+                          // eslint-disable-next-line jsx-a11y/no-autofocus
+                          autoFocus
+                          className="text-edit-input"
+                          value={textEditState.text}
+                          onChange={(e) => setTextEditState((prev) => prev ? { ...prev, text: e.target.value } : null)}
+                          onBlur={confirmTextEdit}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Escape') { cancelTextEdit(); e.stopPropagation(); }
+                            e.stopPropagation();
+                          }}
+                          style={{ fontSize: textEditState.fontSize * zoom }}
+                        />
+                      </div>
+                    )}
                   </div>
                 </div>
                 </div>

@@ -9,7 +9,8 @@ export type AnnotationType =
   | 'rectangle'
   | 'ellipse'
   | 'arrow'
-  | 'line';
+  | 'line'
+  | 'textEdit';
 
 export type Annotation = {
   id: string;
@@ -19,9 +20,10 @@ export type Annotation = {
   width: number;
   height: number;
   text?: string;
+  originalText?: string;
   color?: string;
   strokeWidth?: number;
-  fontSize?: number;
+  fontSize?: number; // for textEdit: unscaled PDF points (cssPx / zoom); for textBox: pixels
   opacity?: number;
   points?: Array<{ x: number; y: number }>;
 };

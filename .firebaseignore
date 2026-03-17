@@ -1,0 +1,7 @@
+**/node_modules/**
+.git
+firebase.json
+**/.*
+**/*.dmg
+**/*.app
+**/*.pkg

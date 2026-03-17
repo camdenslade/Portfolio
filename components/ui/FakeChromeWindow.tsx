@@ -9,24 +9,41 @@ type FakeChromeWindowProps = {
   onViewChange?: (view: ViewState) => void;
 };
 
-export type ViewState = 'google' | 'portfolio' | 'pdf';
+export type ViewState = 'google' | 'portfolio' | 'pdf' | 'lacrosse' | 'files' | 'smoke-launcher';
 
 type BrowserTab = {
   id: string;
   view: ViewState;
 };
 
-const PDF_EDITOR_URL = '/pdf';
+const ADDRESS_TO_VIEW: Record<string, ViewState> = {
+  'cslade.space': 'portfolio',
+  'www.cslade.space': 'portfolio',
+  'cslade.space/portfolio': 'portfolio',
+  'cslade.space/pdf': 'pdf',
+  'cslade.space/files': 'files',
+  'cslade.space/smoke-launcher': 'smoke-launcher',
+  'missouristatelacrosse.com': 'lacrosse',
+  'www.missouristatelacrosse.com': 'lacrosse',
+  'google.com': 'google',
+  'www.google.com': 'google',
+};
 
 const viewToAddress = (view: ViewState): string => {
   if (view === 'portfolio') return 'cslade.space';
   if (view === 'pdf') return 'cslade.space/pdf';
+  if (view === 'lacrosse') return 'missouristatelacrosse.com';
+  if (view === 'files') return 'cslade.space/files';
+  if (view === 'smoke-launcher') return 'cslade.space/smoke-launcher';
   return 'google.com';
 };
 
 const viewToTitle = (view: ViewState): string => {
-  if (view === 'portfolio') return 'Cam Slade — Portfolio';
+  if (view === 'portfolio') return 'Cam Slade - Portfolio';
   if (view === 'pdf') return 'Personal PDF Editor';
+  if (view === 'lacrosse') return 'Missouri State Lacrosse';
+  if (view === 'files') return 'Files - cslade';
+  if (view === 'smoke-launcher') return 'Smoke Launcher';
   return 'Google';
 };
 
@@ -58,9 +75,6 @@ export function FakeChromeWindow({
       prev.map((tab) => (tab.id === activeTabId ? { ...tab, view } : tab))
     );
     setAddressBarValue(viewToAddress(view));
-    if (view === 'google') {
-      setSearchQuery('');
-    }
   }, [activeTabId]);
 
   const navigateToPortfolio = useCallback(() => {
@@ -75,14 +89,19 @@ export function FakeChromeWindow({
     setActiveView('pdf');
   }, [setActiveView]);
 
+  const navigateToLacrosse = useCallback(() => {
+    setActiveView('lacrosse');
+  }, [setActiveView]);
+
+  const navigateToSmokeLauncher = useCallback(() => {
+    setActiveView('smoke-launcher');
+  }, [setActiveView]);
+
   const openNewTab = useCallback((view: ViewState = 'google') => {
     const tab = makeTab(view);
     setTabs((prev) => [...prev, tab]);
     setActiveTabId(tab.id);
     setAddressBarValue(viewToAddress(view));
-    if (view === 'google') {
-      setSearchQuery('');
-    }
   }, []);
 
   const closeTab = useCallback((tabId: string) => {
@@ -91,7 +110,6 @@ export function FakeChromeWindow({
         const onlyTab = prev[0];
         if (!onlyTab) return prev;
         setAddressBarValue(viewToAddress('google'));
-        setSearchQuery('');
         return [{ ...onlyTab, view: 'google' }];
       }
 
@@ -104,9 +122,6 @@ export function FakeChromeWindow({
         if (fallback) {
           setActiveTabId(fallback.id);
           setAddressBarValue(viewToAddress(fallback.view));
-          if (fallback.view === 'google') {
-            setSearchQuery('');
-          }
         }
       }
 
@@ -160,24 +175,24 @@ export function FakeChromeWindow({
   }, [searchQuery]);
 
   const handleAddressBarKeyDown = useCallback((e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && addressBarValue.trim()) {
-      const value = addressBarValue.trim();
-      let url = value;
-      if (!url.startsWith('http://') && !url.startsWith('https://')) {
-        url = 'https://' + url;
-      }
-      window.open(url, '_blank');
+    if (e.key !== 'Enter') return;
+    const raw = addressBarValue.trim().replace(/^https?:\/\//, '').replace(/\/$/, '');
+    const matched = ADDRESS_TO_VIEW[raw];
+    if (matched) {
+      setActiveView(matched);
+    } else if (raw) {
+      window.open(`https://${raw}`, '_blank');
     }
-  }, [addressBarValue]);
+  }, [addressBarValue, setActiveView]);
 
   const openExternal = useCallback((url: string) => {
     window.open(url, '_blank');
   }, []);
 
   return (
-    <div className={compact ? 'w-full h-full' : 'absolute inset-0 z-10 grid place-items-center bg-black/60 p-4'}>
+    <div className={compact ? 'w-full h-full min-h-0' : 'absolute inset-0 z-10 grid place-items-center bg-black/60 p-4'}>
       <section
-        className={`overflow-hidden ${compact ? 'w-full' : 'w-full max-w-3xl'}`}
+        className={`${compact ? 'w-full min-h-0' : 'w-full max-w-3xl min-h-0'}`}
         style={
           compact
             ? {
@@ -188,11 +203,12 @@ export function FakeChromeWindow({
                 flexDirection: 'column' as const,
                 borderTopLeftRadius: '18px',
                 borderTopRightRadius: '18px',
+                minHeight: 0,
               }
             : undefined
         }
       >
-        <div className="flex items-end px-2 pt-1" style={{ backgroundColor: '#d5e3f8', height: '38px' }}>
+        <div className="flex items-end px-2 pt-1" style={{ backgroundColor: '#d5e3f8', height: '38px', borderTopLeftRadius: '18px', borderTopRightRadius: '18px' }}>
           <div
             className="flex items-center gap-2 px-2 pb-2.5"
             onMouseEnter={() => setHoveringTrafficLight(true)}
@@ -369,6 +385,25 @@ export function FakeChromeWindow({
             </svg>
             PDF Editor
           </button>
+          <button
+            type="button"
+            onClick={navigateToLacrosse}
+            style={{ display: 'flex', alignItems: 'center', gap: '6px', borderRadius: '4px', padding: '2px 8px', color: '#5f6368', fontSize: '11px', border: 'none', background: 'none', cursor: 'pointer' }}
+          >
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" style={{ flexShrink: 0 }}>
+              <circle cx="8" cy="8" r="6" fill="#5f6368" opacity="0.5" />
+              <path d="M8 2v12M2 8h12" stroke="#ffffff" strokeWidth="1" />
+            </svg>
+            MSU Lacrosse
+          </button>
+          <button
+            type="button"
+            onClick={navigateToSmokeLauncher}
+            style={{ display: 'flex', alignItems: 'center', gap: '6px', borderRadius: '4px', padding: '2px 8px', color: '#5f6368', fontSize: '11px', border: 'none', background: 'none', cursor: 'pointer' }}
+          >
+            <img src="/smoke-launcher/smoke-transparent.png" width="12" height="12" style={{ flexShrink: 0, borderRadius: '2px', objectFit: 'contain' }} alt="" />
+            Smoke Launcher
+          </button>
         </div>
 
         <div style={{ backgroundColor: '#ffffff', flex: '1 1 0%', minHeight: 0, display: 'flex', flexDirection: 'column' }}>
@@ -474,17 +509,18 @@ export function FakeChromeWindow({
                 </div>
               </div>
             </>
-          ) : currentView === 'portfolio' ? (
-            <iframe
-              src="/portfolio"
-              title="Portfolio"
-              style={{ width: '100%', flex: '1 1 0%', border: 'none', minHeight: 0 }}
-            />
           ) : (
             <iframe
-              src={PDF_EDITOR_URL}
-              title="PDF Editor"
-              style={{ width: '100%', flex: '1 1 0%', border: 'none', minHeight: 0, backgroundColor: '#ffffff' }}
+              src={
+                currentView === 'pdf' ? 'https://cslade.space/pdf' :
+                currentView === 'lacrosse' ? 'https://missouristatelacrosse.com' :
+                currentView === 'files' ? '/files' :
+                currentView === 'smoke-launcher' ? '/smoke-launcher?embed=true' :
+                'https://cslade.space/portfolio'
+              }
+              title={viewToTitle(currentView)}
+              style={{ width: '100%', flex: '1 1 0%', border: 'none', minHeight: 0 }}
+              sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-downloads"
             />
           )}
         </div>

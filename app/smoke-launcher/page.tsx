@@ -60,7 +60,7 @@ function SmokeLauncherPage() {
       {/* Nav */}
       {!embed && (
         <nav style={{ borderBottom: '1px solid rgba(255,255,255,0.06)', padding: '12px 24px', display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <a href="/portfolio" style={{ fontSize: '13px', color: 'rgba(255,255,255,0.4)', textDecoration: 'none' }}>← Portfolio</a>
+          <a href="/portfolio" style={{ fontSize: '13px', color: 'rgba(255,255,255,0.4)', textDecoration: 'none' }}>Portfolio</a>
         </nav>
       )}
 

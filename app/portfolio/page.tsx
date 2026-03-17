@@ -13,7 +13,7 @@ const PROJECTS = [
       'Native macOS launcher for Windows games via Wine. Features automatic Steam game detection from ACF manifests, per-bottle DXVK/ESync toggles, Steam CDN artwork, and a liquid glass SwiftUI interface.',
     stack: ['Swift', 'SwiftUI', 'Wine', 'DXVK', 'Steam CDN'],
     href: 'https://github.com/camdenslade/Smoke-Launcher',
-    download: 'https://buy.stripe.com/dRm28rcGg8sHesRcbh5c400',
+    page: '/smoke-launcher',
   },
   {
     name: 'Even Dating LLC',
@@ -51,7 +51,7 @@ const PROJECTS = [
     stack: ['React Native', 'Expo', 'TypeScript', 'NestJS', 'PostgreSQL', 'AWS', 'Firebase Auth', 'Twilio SMS'],
     href: 'https://github.com/camdenslade/TabUp',
   },
-] as const satisfies readonly { name: string; role: string; period: string | null; summary: string; stack: readonly string[]; href: string | null; download?: string }[];
+] as const satisfies readonly { name: string; role: string; period: string | null; summary: string; stack: readonly string[]; href: string | null; page?: string }[];
 
 const EXPERIENCE = [
   {
@@ -63,24 +63,6 @@ const EXPERIENCE = [
   },
 ] as const;
 
-function ArrowUpRight() {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="11"
-      height="11"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <line x1="7" y1="17" x2="17" y2="7" />
-      <polyline points="7 7 17 7 17 17" />
-    </svg>
-  );
-}
 
 function PortfolioPage() {
   const searchParams = useSearchParams();
@@ -180,17 +162,17 @@ function PortfolioPage() {
                         href={project.href}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-0.5 text-xs text-gray-400 transition-colors hover:text-gray-700"
+                        className="text-xs text-gray-400 transition-colors hover:text-gray-700"
                       >
-                        GitHub <ArrowUpRight />
+                        GitHub
                       </a>
                     )}
-                    {'download' in project && project.download && (
+                    {'page' in project && project.page && (
                       <a
-                        href={project.download}
-                        className="inline-flex items-center gap-0.5 text-xs text-gray-400 transition-colors hover:text-gray-700"
+                        href={project.page}
+                        className="text-xs text-gray-400 transition-colors hover:text-gray-700"
                       >
-                        Download <ArrowUpRight />
+                        Page
                       </a>
                     )}
                   </div>
@@ -271,8 +253,13 @@ function PortfolioPage() {
       </div>
 
       <footer className="border-t border-gray-100">
-        <div className="mx-auto max-w-2xl px-5 py-5 md:px-6">
-          <p className="text-xs text-gray-400">© 2026 Camden Slade - All Rights Reserved</p>
+        <div className="mx-auto max-w-2xl px-5 py-5 md:px-6 flex flex-wrap items-center justify-between gap-4">
+          <p className="text-xs text-gray-400">© 2026 Camden Slade</p>
+          <div className="flex flex-wrap gap-4">
+            <a href="/smoke-launcher" className="text-xs text-gray-400 transition-colors hover:text-gray-700">Smoke Launcher</a>
+            <a href="/pdf" className="text-xs text-gray-400 transition-colors hover:text-gray-700">PDF Editor</a>
+            <a href="https://missouristatelacrosse.com" target="_blank" rel="noopener noreferrer" className="text-xs text-gray-400 transition-colors hover:text-gray-700">MSU Lacrosse</a>
+          </div>
         </div>
       </footer>
     </main>

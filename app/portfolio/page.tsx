@@ -8,7 +8,7 @@ const PROJECTS = [
   {
     name: 'Smoke Launcher',
     role: 'Solo Developer',
-    period: 'Mar 2026',
+    period: 'Mar 2026 - Present',
     summary:
       'Native macOS launcher for Windows games via Wine. Features automatic Steam game detection from ACF manifests, per-bottle DXVK/ESync toggles, Steam CDN artwork, and a liquid glass SwiftUI interface.',
     stack: ['Swift', 'SwiftUI', 'Wine', 'DXVK', 'Steam CDN'],
@@ -18,7 +18,7 @@ const PROJECTS = [
   {
     name: 'Even Dating LLC',
     role: 'Founder & Lead Developer',
-    period: 'Dec 2025 – Present',
+    period: 'Dec 2025 - Present',
     summary:
       'Full-stack location-based dating app for college communities. Designed backend APIs, authentication systems, and swipe matching logic. Deployed scalable infrastructure using AWS and Redis.',
     stack: ['React Native', 'NestJS', 'PostgreSQL', 'AWS SNS', 'Cognito', 'S3', 'EC2', 'Redis'],
@@ -27,7 +27,7 @@ const PROJECTS = [
   {
     name: 'Missouri State Lacrosse',
     role: 'Technology Chair · 501(c) NonProfit',
-    period: 'Sep 2025 – Present',
+    period: 'Sep 2025 - Present',
     summary:
       'Platform for team media streaming, roster management, and merchandise sales. Integrated payment processing and merchandise fulfillment systems. Maintained hosting infrastructure and content delivery.',
     stack: ['React', 'Spring Boot', 'Firebase Auth', 'Cloudflare', 'AWS EC2', 'SES', 'S3'],
@@ -57,12 +57,20 @@ const EXPERIENCE = [
   {
     role: 'Grading Assistant',
     company: 'Missouri State University · Dept. of Mathematics',
-    period: 'Aug 2025 – Dec 2025',
+    period: 'Aug 2025 - Dec 2025',
     detail:
       'Graded MTH 345, Statistics for Scientists and Engineers, with a focus on standard probability and statistical distributions.',
   },
 ] as const;
 
+function ArrowUpRight() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="7" y1="17" x2="17" y2="7" />
+      <polyline points="7 7 17 7 17 17" />
+    </svg>
+  );
+}
 
 function PortfolioPage() {
   const searchParams = useSearchParams();
@@ -162,17 +170,17 @@ function PortfolioPage() {
                         href={project.href}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-xs text-gray-400 transition-colors hover:text-gray-700"
+                        className="inline-flex items-center gap-0.5 text-xs text-gray-400 transition-colors hover:text-gray-700"
                       >
-                        GitHub
+                        GitHub <ArrowUpRight />
                       </a>
                     )}
                     {'page' in project && project.page && (
                       <a
                         href={project.page}
-                        className="text-xs text-gray-400 transition-colors hover:text-gray-700"
+                        className="inline-flex items-center gap-0.5 text-xs text-gray-400 transition-colors hover:text-gray-700"
                       >
-                        Page
+                        Page <ArrowUpRight />
                       </a>
                     )}
                   </div>

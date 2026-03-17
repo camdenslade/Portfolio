@@ -35,7 +35,7 @@ const PROJECTS = [
   },
   {
     name: 'Nova Dom',
-    role: 'Head Developer',
+    role: 'Author',
     period: null,
     summary:
       'Open-source TypeScript-first DOM editing engine for React, built for visual editors, page builders, and no-code tools. Uses a flat DocumentTree model for scalable editing, efficient diffing, and history-safe undo/redo.',

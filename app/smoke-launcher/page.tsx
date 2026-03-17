@@ -86,7 +86,7 @@ function SmokeLauncherPage() {
               Smoke Launcher
             </h1>
             <p style={{ marginTop: '8px', fontSize: embed ? '13px' : '16px', color: 'rgba(255,255,255,0.5)', maxWidth: '480px', lineHeight: 1.5 }}>
-              A native macOS launcher for Windows games via Wine -<br />with a liquid glass UI and Steam integration.
+              A native macOS launcher for Windows games via Wine<br />with a liquid glass UI and Steam integration.
             </p>
           </div>
 

@@ -166,7 +166,7 @@ export function IntroSceneMobile({ controller, backOutRef, isBackingOut }: Props
       <IphoneModel
         onScreenClick={startFocusFlow}
         onOutsideScreenClick={cameraState === 'IDLE' ? startFocusFlow : handleOutsideScreenClick}
-        screenOverlay={screenOverlay}
+        screenOverlay={cameraState === 'ENTER_SCREEN' && !isBackingOut ? null : screenOverlay}
         floatEnabled={cameraState === 'IDLE'}
       />
     </>

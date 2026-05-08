@@ -208,6 +208,17 @@ export function FakeSafariWindow({ onBack }: Props) {
   const [view, setView] = useState<SafariViewState>('newtab');
   const [addressBar, setAddressBar] = useState('');
 
+  // Receive postMessage from embedded iframes (iOS blocks window.open in sandboxed iframes)
+  useEffect(() => {
+    const handler = (e: MessageEvent) => {
+      if (e.data?.type === 'open-url' && typeof e.data.url === 'string') {
+        window.open(e.data.url, '_blank', 'noopener,noreferrer');
+      }
+    };
+    window.addEventListener('message', handler);
+    return () => window.removeEventListener('message', handler);
+  }, []);
+
   const navigate = useCallback((v: SafariViewState) => {
     setView(v);
     setAddressBar(v === 'newtab' ? '' : VIEW_URLS[v]);
@@ -249,7 +260,7 @@ export function FakeSafariWindow({ onBack }: Props) {
           src={iframeSrc}
           title={view}
           style={{ flex: '1 1 0%', border: 'none', minHeight: 0 }}
-          sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-downloads"
+          sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-downloads allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation"
         />
       ) : (
         <NewTabPage onNavigate={navigate} />

@@ -14,7 +14,9 @@
   "dependencies": {
     "@react-three/drei": "^9.121.4",
     "@react-three/fiber": "^8.17.10",
+    "firebase": "^12.12.1",
     "gsap": "^3.12.7",
+    "jose": "^6.2.3",
     "next": "^14.2.33",
     "pdf-lib": "^1.17.1",
     "pdfjs-dist": "^4.8.69",

@@ -11,13 +11,11 @@ import type { ReactNode } from 'react';
 const MODEL_PATH = '/models/iphone-compressed.glb';
 const LOADED_MODEL_SCALE = 1.0;
 
-// ── Tune these until the overlay sits on the screen ──────────────────────────
 export const IPHONE_SCREEN_OVERLAY = {
   position: [-0.04, 0.025, 0] as [number, number, number],
   rotation: [0, -Math.PI / 2, 0] as [number, number, number],
   width: 30.8, // model-local units — match to the screen mesh width
 };
-// ─────────────────────────────────────────────────────────────────────────────
 
 export const IPHONE_SCREEN_PX = { w: 390, h: 844 };
 

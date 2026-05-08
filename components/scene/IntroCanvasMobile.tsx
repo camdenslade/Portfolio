@@ -2,7 +2,6 @@
 
 import { Canvas } from '@react-three/fiber';
 import { Suspense, useCallback, useEffect, useRef, useState } from 'react';
-import gsap from 'gsap';
 import { IntroSceneMobile } from './IntroSceneMobile';
 import { useIntroController } from './useIntroController';
 import { FakeSafariWindow } from '@/components/ui/FakeSafariWindow';
@@ -10,10 +9,9 @@ import { FakeSafariWindow } from '@/components/ui/FakeSafariWindow';
 export default function IntroCanvasMobile() {
   const controller = useIntroController();
   const backOutRef = useRef<(() => void) | null>(null);
-  const overlayRef = useRef<HTMLDivElement | null>(null);
   const [isBackingOut, setIsBackingOut] = useState(false);
 
-  // Lock body scroll while in the zoomed phone view
+  // Lock body scroll while overlay is open
   useEffect(() => {
     if (controller.cameraState !== 'ENTER_SCREEN') return;
     const prev = document.body.style.overflow;
@@ -21,34 +19,11 @@ export default function IntroCanvasMobile() {
     return () => { document.body.style.overflow = prev; };
   }, [controller.cameraState]);
 
-  // Zoom in when overlay mounts
-  useEffect(() => {
-    if (controller.cameraState !== 'ENTER_SCREEN') return;
-    const el = overlayRef.current;
-    if (!el) return;
-    gsap.fromTo(el,
-      { scale: 1.15, opacity: 0 },
-      { scale: 1.0, opacity: 1, duration: 0.3, ease: 'power2.out' }
-    );
-  }, [controller.cameraState]);
-
   const handleBackOut = useCallback(() => {
-    setIsBackingOut(true); // reveal 3D overlay behind DOM overlay
-    const el = overlayRef.current;
-    if (el) {
-      gsap.to(el, {
-        opacity: 0,
-        duration: 0.3,
-        ease: 'power1.in',
-        onComplete: () => {
-          controller.setShowFakeChrome(false);
-          controller.setCameraState('IDLE');
-          setIsBackingOut(false);
-        },
-      });
-    }
+    setIsBackingOut(true);
     backOutRef.current?.();
-  }, [controller]);
+    // setCameraState('IDLE') comes from the camera animation onComplete in IntroSceneMobile
+  }, []);
 
   return (
     <div style={{ position: 'relative', width: '100%', height: '100dvh' }}>
@@ -56,7 +31,7 @@ export default function IntroCanvasMobile() {
         camera={{ position: [-3.5, 0.2, 0], fov: 42 }}
         dpr={[1, 1.5]}
         gl={{ antialias: true, toneMappingExposure: 1.2 }}
-        style={{ width: '100%', height: '100%' }}
+        style={{ width: '100%', height: '100%', pointerEvents: controller.cameraState === 'ENTER_SCREEN' ? 'none' : 'auto' }}
       >
         <color attach="background" args={['#ffffff']} />
         <ambientLight intensity={0.8} color="#ffffff" />
@@ -68,17 +43,25 @@ export default function IntroCanvasMobile() {
         </Suspense>
       </Canvas>
 
-      {/* Full-screen native DOM overlay in ENTER_SCREEN — no CSS 3D transform, so touch scroll works */}
+      {/* Tap hint — visible only when idle */}
+      {controller.cameraState === 'IDLE' && (
+        <div style={{
+          position: 'absolute', bottom: '14%', left: 0, right: 0,
+          display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6,
+          pointerEvents: 'none',
+          animation: 'fadeInUp 0.6s ease forwards',
+        }}>
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" style={{ opacity: 0.4 }}>
+            <path d="M9 11V6a3 3 0 0 1 6 0v5" stroke="#333" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M5 11h14l-1.5 9H6.5L5 11z" stroke="#333" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+          <span style={{ fontSize: 13, color: 'rgba(0,0,0,0.35)', letterSpacing: '0.02em' }}>tap the screen</span>
+        </div>
+      )}
+
+      {/* Full-screen native DOM overlay — no animations, no inline styles, clean hit testing */}
       {controller.cameraState === 'ENTER_SCREEN' && (
-        <div
-          ref={overlayRef}
-          style={{
-            position: 'fixed',
-            inset: 0,
-            zIndex: 100,
-            overflow: 'hidden',
-          }}
-        >
+        <div style={{ position: 'fixed', inset: 0, zIndex: 100 }}>
           <FakeSafariWindow onBack={handleBackOut} />
         </div>
       )}

@@ -25,8 +25,6 @@ type ToolbarProps = {
 
 const ZOOM_PRESETS = [0.5, 0.75, 1.0, 1.25, 1.5, 2.0, 3.0];
 
-// ── Inline SVG Icons (16×16) ────────────────────────
-
 const IconFolder = () => (
   <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
     <path d="M2 4a1 1 0 011-1h3.5l1.5 1.5H13a1 1 0 011 1V12a1 1 0 01-1 1H3a1 1 0 01-1-1V4z" stroke="currentColor" strokeWidth="1.3" fill="none" />

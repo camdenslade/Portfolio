@@ -12,14 +12,14 @@ const ALL_BADGES = [
 ];
 
 const ALL_PROJECTS: { name: string; category: string }[] = [
-  { name: 'Even Dating',             category: 'Mobile Apps' },
+  { name: 'Even Dating',             category: 'Flagship Projects' },
+  { name: 'Versa',                   category: 'Flagship Projects' },
+  { name: 'Missouri State Lacrosse', category: 'Flagship Projects' },
   { name: 'TabUp',                   category: 'Mobile Apps' },
-  { name: 'Missouri State Lacrosse', category: 'Web Platforms' },
   { name: 'Smoke Launcher',          category: 'Desktop' },
   { name: 'Kimbu',                   category: 'Infrastructure' },
-  { name: 'Versa',                   category: 'Infrastructure' },
   { name: 'Binate',                  category: 'Open Source & Research' },
-  { name: 'Binate GPU',              category: 'Open Source & Research' },
+  { name: 'Glyph',                   category: 'Open Source & Research' },
   { name: 'Nova Dom',                category: 'Open Source & Research' },
 ];
 

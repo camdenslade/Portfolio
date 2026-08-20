@@ -296,25 +296,25 @@ const PROJECTS = {
     stack: ['Rust', 'gimli (DWARF)', 'iced-x86', 'rayon', 'object', 'memmap2', 'clap'],
   },
 
-  'binate-gpu': {
-    name: 'Binate GPU',
-    logo: '/logos/Binate-GPU.png',
+  'Glyph': {
+    name: 'Glyph',
+    logo: '/logos/Glyph.png',
     tagline: 'A GPU-accelerated reactive UI framework built in Rust.',
     badges: ['In Progress', 'Rust'],
     role: 'Author',
     period: 'Apr 2026 - Present',
     links: [
-      { label: 'GitHub', href: 'https://github.com/camdenslade/binate-gpu' },
+      { label: 'GitHub', href: 'https://github.com/camdenslade/Glyph' },
     ],
-    overview: `Binate GPU is a from-scratch UI framework for Rust that renders entirely on the GPU via wgpu. Rather than using native controls, it builds its own rendering pipeline: SDF rounded rectangles, a shelf-packed glyph atlas for text, and Taffy flexbox for layout. Reactivity is handled by Signal<T> cells that trigger redraws via a thread-local dirty flag.\n\nThe framework is structured as six focused crates: core (View tree, signals, layout), text (cosmic-text shaping, glyph atlas), render (wgpu pipelines), platform (winit event loop, hit-testing), native (macOS AppKit bridge via objc2), and demo (counter example).`,
+    overview: `Glyph is a from-scratch UI framework for Rust that renders entirely on the GPU via wgpu. Rather than using native controls, it builds its own rendering pipeline: SDF rounded rectangles, a shelf-packed Glyphatlas for text, and Taffy flexbox for layout. Reactivity is handled by Signal<T> cells that trigger redraws via a thread-local dirty flag.\n\nThe framework is structured as six focused crates: core (View tree, signals, layout), text (cosmic-text shaping, Glyphatlas), render (wgpu pipelines), platform (winit event loop, hit-testing), native (macOS AppKit bridge via objc2), and demo (counter example).`,
     highlights: [
       {
         title: 'SDF rounded-rect shader',
         desc: 'Rectangles are drawn with a 45-line WGSL shader using signed distance fields for anti-aliased corners at any radius. No geometry tessellation needed.',
       },
       {
-        title: 'Glyph atlas with shelf packing',
-        desc: 'Glyphs shaped by cosmic-text are packed into a 1024x1024 R8 texture using a shelf allocator. Cached by CacheKey so each glyph is uploaded once per font/size/style combination.',
+        title: 'Glyphatlas with shelf packing',
+        desc: 'Glyphs shaped by cosmic-text are packed into a 1024x1024 R8 texture using a shelf allocator. Cached by CacheKey so each Glyphis uploaded once per font/size/style combination.',
       },
       {
         title: 'Signal-based reactivity',

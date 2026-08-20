@@ -12,7 +12,7 @@ const FLAGSHIP_PROJECTS = [
     initials: 'EV',
     logo: '/logos/even.png',
     role: 'Founder & Lead Developer',
-    period: 'Dec 2025 - Present',
+    period: 'Dec 2025 - May 2026',
     badges: ['iOS', 'Live', 'Startup'],
     summary:
       'Founder and lead developer of a location-based dating app for college communities, live on the App Store and actively deployed. Designed custom Cognito auth flows, real-time swipe matching, and a Redis-backed queue system. Deployed and iterating on scalable production infrastructure on AWS.',
@@ -24,7 +24,7 @@ const FLAGSHIP_PROJECTS = [
     initials: 'VS',
     logo: '/logos/Versa.png',
     role: 'Developer',
-    period: 'Apr 2026 - Present',
+    period: 'Apr 2026 - May 2026',
     badges: ['In Progress', 'iOS'],
     summary:
       'A real-time collaborative sync architecture built on top of Loro CRDTs. A single Rust core compiles to both a Swift XCFramework (via UniFFI) and a WASM module (via wasm-bindgen), sharing identical conflict-resolution logic across iOS and web. A stateless Go WebSocket relay fans out binary diffs; each client merges them locally using version vectors so only deltas travel the wire.',
@@ -32,16 +32,20 @@ const FLAGSHIP_PROJECTS = [
     links: [{ label: 'GitHub', href: 'https://github.com/camdenslade/versa' }, { label: 'Details', href: '/portfolio/projects/versa' }],
   },
   {
-    name: 'Binate',
-    initials: 'BN',
-    logo: '/logos/Binate.png',
-    role: 'Author',
-    period: null,
-    badges: ['Open Source', 'Rust'],
+    name: 'Missouri State Lacrosse',
+    initials: 'ML',
+    logo: '/logos/mostate.png',
+    role: 'Technology Chair · Developer',
+    period: 'Sep 2025 - Present',
+    badges: ['Live', 'NonProfit'],
     summary:
-      'A semantic binary diff tool that compares Rust binaries by masking known sources of non-determinism (build IDs, timestamps, absolute paths), then maps changed byte ranges back to source symbols and file locations via DWARF debug info. Used for build reproducibility validation in CI pipelines.',
-    stack: ['Rust', 'gimli (DWARF)', 'iced-x86', 'rayon', 'object', 'memmap2'],
-    links: [{ label: 'GitHub', href: 'https://github.com/camdenslade/binate' }, { label: 'Details', href: '/portfolio/projects/binate' }],
+      'Built and maintained a full-stack platform serving the Missouri State University lacrosse community, including players, coaches, alumni, and family across both teams. Supports media streaming, roster management, and e-commerce for active team operations, including payment processing and merchandise fulfillment integrations.',
+    stack: ['React', 'Spring Boot', 'Firebase Auth', 'Cloudflare', 'AWS (EC2, SES, S3)'],
+    links: [
+      { label: 'Site', href: 'https://missouristatelacrosse.com' },
+      { label: 'GitHub', href: 'https://github.com/camdenslade/missouristatelacrosse' },
+      { label: 'Details', href: '/portfolio/projects/missouri-state-lacrosse' },
+    ],
   },
 ];
 
@@ -55,32 +59,11 @@ const PROJECT_CATEGORIES = [
         logo: '/logos/tabup.png',
         role: 'Team Lead · API & Deployment Engineer',
         period: 'Jan 2026 - May 2026',
-        badges: ['React Native', 'TestFlight'],
+        badges: ['TestFlight'],
         summary:
           'Bill-splitting app focused on real-world usability, including receipt capture, flexible split logic, and payout-aware reminders without directly handling funds.',
         stack: ['React Native', 'Expo', 'TypeScript', 'NestJS', 'PostgreSQL', 'AWS', 'Firebase Auth', 'Twilio SMS'],
         links: [{ label: 'GitHub', href: 'https://github.com/camdenslade/TabUp' }, { label: 'TestFlight', href: 'https://testflight.apple.com/join/HZDcwfxr' }, { label: 'Details', href: '/portfolio/projects/tabup' }],
-      },
-    ],
-  },
-  {
-    label: 'Web Platforms',
-    projects: [
-      {
-        name: 'Missouri State Lacrosse',
-        initials: 'ML',
-        logo: '/logos/mostate.png',
-        role: 'Technology Chair · Developer',
-        period: 'Sep 2025 - Present',
-        badges: ['Live', 'NonProfit'],
-        summary:
-          'Built and maintained a full-stack platform serving the Missouri State University lacrosse community, including players, coaches, alumni, and family across both teams. Supports media streaming, roster management, and e-commerce for active team operations, including payment processing and merchandise fulfillment integrations.',
-        stack: ['React', 'Spring Boot', 'Firebase Auth', 'Cloudflare', 'AWS (EC2, SES, S3)'],
-        links: [
-          { label: 'Site', href: 'https://missouristatelacrosse.com' },
-          { label: 'GitHub', href: 'https://github.com/camdenslade/missouristatelacrosse' },
-          { label: 'Details', href: '/portfolio/projects/missouri-state-lacrosse' },
-        ],
       },
     ],
   },
@@ -125,16 +108,28 @@ const PROJECT_CATEGORIES = [
     label: 'Open Source & Research',
     projects: [
       {
-        name: 'Binate GPU',
+        name: 'Glyph',
         initials: 'BG',
-        logo: '/logos/Binate-GPU.png',
+        logo: '/logos/Glyph.png',
         role: 'Author',
         period: null,
-        badges: ['In Progress', 'Rust'],
+        badges: ['In Progress', 'Open Source'],
         summary:
-          'A GPU-accelerated reactive UI framework for Rust. Renders a declarative View tree via wgpu with SDF rounded-rect shaders, cosmic-text glyph atlas, Taffy flexbox layout, and signal-based reactivity. Optional macOS native bridge via objc2.',
+          'A GPU-accelerated reactive UI framework for Rust. Renders a declarative View tree via wgpu with SDF rounded-rect shaders, cosmic-text Glyphatlas, Taffy flexbox layout, and signal-based reactivity. Optional macOS native bridge via objc2.',
         stack: ['Rust', 'wgpu', 'WGSL', 'winit', 'taffy', 'cosmic-text', 'objc2'],
-        links: [{ label: 'GitHub', href: 'https://github.com/camdenslade/binate-gpu' }, { label: 'Details', href: '/portfolio/projects/binate-gpu' }],
+        links: [{ label: 'GitHub', href: 'https://github.com/camdenslade/Glyph' }, { label: 'Details', href: 'https://glyph.cslade.space' }],
+      },
+       {
+        name: 'Binate',
+        initials: 'BN',
+        logo: '/logos/Binate.png',
+        role: 'Author',
+        period: null,
+        badges: ['Open Source'],
+        summary:
+          'A semantic binary diff tool that compares Rust binaries by masking known sources of non-determinism (build IDs, timestamps, absolute paths), then maps changed byte ranges back to source symbols and file locations via DWARF debug info. Used for build reproducibility validation in CI pipelines.',
+        stack: ['Rust', 'gimli (DWARF)', 'iced-x86', 'rayon', 'object', 'memmap2'],
+        links: [{ label: 'GitHub', href: 'https://github.com/camdenslade/binate' }, { label: 'Details', href: '/portfolio/projects/binate' }],
       },
       {
         name: 'Nova Dom',
@@ -172,6 +167,7 @@ const EXPERIENCE = [
   {
     role: 'Grading Assistant',
     company: 'Missouri State University · Dept. of Mathematics',
+    logo: '/logos/missouristate.jpeg',
     period: 'Aug 2025 - Dec 2025',
     detail:
       'Graded MTH 345, Statistics for Scientists and Engineers, with a focus on standard probability and statistical distributions.',
@@ -182,7 +178,7 @@ const HIGHLIGHTS = [
   'Built and shipped a live App Store dating app as sole founder - custom auth, real-time matching, and AWS infrastructure',
   'Designed a real-time sync architecture on top of Loro CRDTs, compiling a single Rust core to both a Swift XCFramework and a WASM module',
   'Built a semantic binary diff tool that maps changed byte ranges back to source symbols via DWARF debug info',
-  'Built a GPU-accelerated UI framework from scratch in Rust using wgpu, SDF shaders, and a shelf-packed glyph atlas',
+  'Built a GPU-accelerated UI framework from scratch in Rust using wgpu, SDF shaders, and a shelf-packed Glyphatlas',
 ] as const;
 
 // Icons
@@ -400,7 +396,7 @@ function PortfolioPage() {
 
       <div className="mx-auto max-w-2xl px-5 py-12 md:px-6 md:py-16">
 
-        {/* ── Hero ── */}
+        {/* Hero */}
         <section>
           <div className="flex items-center gap-5">
             <img
@@ -428,7 +424,7 @@ function PortfolioPage() {
           </div>
           <div className="mt-5 flex flex-wrap gap-3">
             <a
-              href="/CamdenSladeResume.pdf"
+              href="/CamSladeResumeJuly.pdf"
               download
               className="inline-flex items-center gap-1.5 rounded border border-gray-200 bg-gray-50 px-3 py-1.5 text-sm text-gray-700 transition-colors hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800"
             >
@@ -500,7 +496,7 @@ function PortfolioPage() {
             {EXPERIENCE.map((item) => (
               <div key={item.role} className="flex gap-4">
                 <div className="mt-0.5 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-800 overflow-hidden">
-                  <img src="/logos/missouristate.jpeg" alt="Missouri State University" className="h-full w-full object-cover rounded-lg" />
+                  <img src={item.logo} alt={item.company} className="h-full w-full object-cover rounded-lg" />
                 </div>
                 <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-0.5">

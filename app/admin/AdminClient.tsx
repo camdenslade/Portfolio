@@ -1,7 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { kimbuLogin, kimbuRefresh, KimbuTokens } from '../../lib/kimbu';
+import { onAuthStateChanged, signInWithEmailAndPassword, signOut, type User } from 'firebase/auth';
+import { auth } from '../../lib/firebase';
 
 const SET_BADGE_URL = process.env.NEXT_PUBLIC_SET_BADGE_URL ?? '';
 const GET_BADGE_URL = process.env.NEXT_PUBLIC_GET_BADGE_URL ?? '';
@@ -25,24 +26,9 @@ const ALL_PROJECTS: { name: string; category: string }[] = [
 
 type Overrides = Record<string, string[]>;
 
-function getStoredTokens(): KimbuTokens | null {
-  try {
-    const raw = localStorage.getItem('admin_tokens');
-    return raw ? JSON.parse(raw) as KimbuTokens : null;
-  } catch { return null; }
-}
-
-function storeTokens(tokens: KimbuTokens) {
-  localStorage.setItem('admin_tokens', JSON.stringify(tokens));
-}
-
-function clearTokens() {
-  localStorage.removeItem('admin_tokens');
-}
-
 // ── Login screen ──────────────────────────────────────────────────────────────
 
-function LoginForm({ onLogin }: { onLogin: (tokens: KimbuTokens) => void }) {
+function LoginForm() {
   const [email, setEmail]       = useState('');
   const [password, setPassword] = useState('');
   const [error, setError]       = useState('');
@@ -53,8 +39,7 @@ function LoginForm({ onLogin }: { onLogin: (tokens: KimbuTokens) => void }) {
     setError('');
     setLoading(true);
     try {
-      const tokens = await kimbuLogin(email, password);
-      onLogin(tokens);
+      await signInWithEmailAndPassword(auth, email, password);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Login failed');
     } finally {
@@ -92,7 +77,7 @@ function LoginForm({ onLogin }: { onLogin: (tokens: KimbuTokens) => void }) {
             {loading ? 'Signing in...' : 'Sign in'}
           </button>
         </form>
-        <p className="mt-6 text-center text-xs text-gray-400 dark:text-gray-600">Secured by Kimbu</p>
+        <p className="mt-6 text-center text-xs text-gray-400 dark:text-gray-600">Secured by Firebase</p>
       </div>
     </div>
   );
@@ -153,7 +138,7 @@ function CustomTagInput({ projectName, activeBadges, onAdd }: {
 
 // ── Main admin panel ──────────────────────────────────────────────────────────
 
-function AdminPanel({ tokens, onLogout }: { tokens: KimbuTokens; onLogout: () => void }) {
+function AdminPanel({ user, onLogout }: { user: User; onLogout: () => void }) {
   const [overrides, setOverrides]   = useState<Overrides>({});
   const [original, setOriginal]     = useState<Overrides>({});
   const [loading, setLoading]       = useState(true);
@@ -204,21 +189,13 @@ function AdminPanel({ tokens, onLogout }: { tokens: KimbuTokens; onLogout: () =>
     setSaving(true);
     setStatus(null);
     try {
-      let currentTokens = tokens;
-      // Proactively refresh if near expiry
-      const stored = getStoredTokens();
-      if (stored) {
-        try {
-          currentTokens = await kimbuRefresh(stored.refreshToken);
-          storeTokens(currentTokens);
-        } catch { /* use existing token */ }
-      }
+      const accessToken = await user.getIdToken();
 
       const res = await fetch(SET_BADGE_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${currentTokens.accessToken}`,
+          'Authorization': `Bearer ${accessToken}`,
         },
         body: JSON.stringify({ overrides }),
       });
@@ -327,26 +304,21 @@ function AdminPanel({ tokens, onLogout }: { tokens: KimbuTokens; onLogout: () =>
 // ── Root ──────────────────────────────────────────────────────────────────────
 
 export default function AdminClient() {
-  const [tokens, setTokens] = useState<KimbuTokens | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [checked, setChecked] = useState(false);
 
   useEffect(() => {
-    const stored = getStoredTokens();
-    if (stored) setTokens(stored);
-    setChecked(true);
+    return onAuthStateChanged(auth, currentUser => {
+      setUser(currentUser);
+      setChecked(true);
+    });
   }, []);
 
-  function handleLogin(t: KimbuTokens) {
-    storeTokens(t);
-    setTokens(t);
-  }
-
   function handleLogout() {
-    clearTokens();
-    setTokens(null);
+    void signOut(auth);
   }
 
   if (!checked) return null;
-  if (!tokens) return <LoginForm onLogin={handleLogin} />;
-  return <AdminPanel tokens={tokens} onLogout={handleLogout} />;
+  if (!user) return <LoginForm />;
+  return <AdminPanel user={user} onLogout={handleLogout} />;
 }

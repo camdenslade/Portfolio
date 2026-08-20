@@ -32,26 +32,12 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
-var _a, _b;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getBadgeOverrides = exports.setBadgeOverrides = void 0;
 const admin = __importStar(require("firebase-admin"));
 const https_1 = require("firebase-functions/v2/https");
 admin.initializeApp();
 const db = admin.firestore();
-const KIMBU_BASE_URL = (_a = process.env.KIMBU_BASE_URL) !== null && _a !== void 0 ? _a : 'https://api.kimbu.cslade.space';
-const KIMBU_APP_ID = (_b = process.env.KIMBU_APP_ID) !== null && _b !== void 0 ? _b : '';
-async function introspect(token) {
-    const res = await fetch(`${KIMBU_BASE_URL}/v1/auth/introspect`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token }),
-    });
-    if (!res.ok)
-        return false;
-    const data = await res.json();
-    return data.active === true;
-}
 exports.setBadgeOverrides = (0, https_1.onRequest)({ cors: ['https://cslade.space', 'https://portfolio-dae1f.web.app', 'http://localhost:3000'] }, async (req, res) => {
     var _a;
     if (req.method === 'OPTIONS') {
@@ -68,8 +54,10 @@ exports.setBadgeOverrides = (0, https_1.onRequest)({ cors: ['https://cslade.spac
         res.status(401).json({ error: 'Missing token' });
         return;
     }
-    const valid = await introspect(token);
-    if (!valid) {
+    try {
+        await admin.auth().verifyIdToken(token);
+    }
+    catch (_b) {
         res.status(401).json({ error: 'Invalid or expired token' });
         return;
     }
@@ -85,7 +73,7 @@ exports.setBadgeOverrides = (0, https_1.onRequest)({ cors: ['https://cslade.spac
             return;
         }
     }
-    await db.collection('portfolio').doc('badge-overrides').set({ overrides, updatedAt: admin.firestore.FieldValue.serverTimestamp(), appId: KIMBU_APP_ID }, { merge: false });
+    await db.collection('portfolio').doc('badge-overrides').set({ overrides, updatedAt: admin.firestore.FieldValue.serverTimestamp() }, { merge: false });
     res.status(200).json({ ok: true });
 });
 exports.getBadgeOverrides = (0, https_1.onRequest)({ cors: true }, async (_req, res) => {

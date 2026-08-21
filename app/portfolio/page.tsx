@@ -15,7 +15,7 @@ const FLAGSHIP_PROJECTS = [
     period: 'Dec 2025 - May 2026',
     badges: ['iOS', 'Live', 'Startup'],
     summary:
-      'Founder and lead developer of a location-based dating app for college communities, live on the App Store and actively deployed. Designed custom Cognito auth flows, real-time swipe matching, and a Redis-backed queue system. Deployed and iterating on scalable production infrastructure on AWS.',
+      'Founder and lead developer of a location-based dating app designed for college communities, live on the App Store but server is currently offline and no longer maintained. Designed custom Cognito auth flows, real-time swipe matching, and a Redis-backed queue system. Deployed and iterating on scalable production infrastructure on AWS.',
     stack: ['Swift', 'SwiftUI', 'NestJS', 'PostgreSQL', 'AWS (Cognito, SNS, S3, EC2)', 'Redis'],
     links: [{ label: 'App Store', href: 'https://apps.apple.com/us/app/even-dating/id6756533343' }, { label: 'Details', href: '/portfolio/projects/even-dating' }],
   },
@@ -175,7 +175,7 @@ const EXPERIENCE = [
 ] as const;
 
 const HIGHLIGHTS = [
-  'Built and shipped a live App Store dating app as sole founder - custom auth, real-time matching, and AWS infrastructure',
+  'Built and shipped a live App Store dating app - custom auth, real-time matching, and AWS infrastructure',
   'Designed a real-time sync architecture on top of Loro CRDTs, compiling a single Rust core to both a Swift XCFramework and a WASM module',
   'Built a semantic binary diff tool that maps changed byte ranges back to source symbols via DWARF debug info',
   'Built a GPU-accelerated UI framework from scratch in Rust using wgpu, SDF shaders, and a shelf-packed Glyphatlas',
@@ -412,7 +412,7 @@ function PortfolioPage() {
             </div>
           </div>
           <p className="mt-4 max-w-xl text-[0.9375rem] leading-relaxed text-gray-600 dark:text-gray-400">
-            Full-stack and systems developer. I build and deploy production applications, distributed infrastructure, and low-level tooling; spanning from an App Store startup to a Rust-based CRDT sync engine and a GPU-accelerated UI framework.
+            Full-stack and systems developer. I like to build and deploy production applications, distributed infrastructure, and low-level tooling; spanning from an app on the App Store to a Rust-based CRDT sync engine and a GPU-accelerated UI framework.
           </p>
           <div className="mt-3 flex flex-wrap gap-1.5">
             <p className="text-sm font-semibold text-black tracking-wide py-0.2">Top Languages:</p>

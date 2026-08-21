@@ -8,6 +8,22 @@ import { Suspense, useEffect, useState } from 'react';
 
 const FLAGSHIP_PROJECTS = [
   {
+    name: 'Missouri State Lacrosse',
+    initials: 'ML',
+    logo: '/logos/mostate.png',
+    role: 'Technology Chair · Developer',
+    period: 'Sep 2025 - Present',
+    badges: ['Live', 'NonProfit'],
+    summary:
+      'Built and maintained a full-stack platform serving the Missouri State University lacrosse community, including players, coaches, alumni, and family across both teams. Supports media streaming, roster management, and e-commerce for active team operations, including payment processing and merchandise fulfillment integrations.',
+    stack: ['React', 'Spring Boot', 'Firebase Auth', 'Cloudflare', 'AWS (EC2, SES, S3)'],
+    links: [
+      { label: 'Site', href: 'https://missouristatelacrosse.com' },
+      { label: 'GitHub', href: 'https://github.com/camdenslade/missouristatelacrosse' },
+      { label: 'Details', href: '/portfolio/projects/missouri-state-lacrosse' },
+    ],
+  },
+  {
     name: 'Even Dating',
     initials: 'EV',
     logo: '/logos/even.png',
@@ -30,22 +46,6 @@ const FLAGSHIP_PROJECTS = [
       'A real-time collaborative sync architecture built on top of Loro CRDTs. A single Rust core compiles to both a Swift XCFramework (via UniFFI) and a WASM module (via wasm-bindgen), sharing identical conflict-resolution logic across iOS and web. A stateless Go WebSocket relay fans out binary diffs; each client merges them locally using version vectors so only deltas travel the wire.',
     stack: ['Go', 'Rust', 'Swift', 'SwiftUI', 'UniFFI', 'WASM', 'wasm-bindgen', 'Loro CRDTs', 'PostgreSQL'],
     links: [{ label: 'GitHub', href: 'https://github.com/camdenslade/versa' }, { label: 'Details', href: '/portfolio/projects/versa' }],
-  },
-  {
-    name: 'Missouri State Lacrosse',
-    initials: 'ML',
-    logo: '/logos/mostate.png',
-    role: 'Technology Chair · Developer',
-    period: 'Sep 2025 - Present',
-    badges: ['Live', 'NonProfit'],
-    summary:
-      'Built and maintained a full-stack platform serving the Missouri State University lacrosse community, including players, coaches, alumni, and family across both teams. Supports media streaming, roster management, and e-commerce for active team operations, including payment processing and merchandise fulfillment integrations.',
-    stack: ['React', 'Spring Boot', 'Firebase Auth', 'Cloudflare', 'AWS (EC2, SES, S3)'],
-    links: [
-      { label: 'Site', href: 'https://missouristatelacrosse.com' },
-      { label: 'GitHub', href: 'https://github.com/camdenslade/missouristatelacrosse' },
-      { label: 'Details', href: '/portfolio/projects/missouri-state-lacrosse' },
-    ],
   },
 ];
 
@@ -412,7 +412,7 @@ function PortfolioPage() {
             </div>
           </div>
           <p className="mt-4 max-w-xl text-[0.9375rem] leading-relaxed text-gray-600 dark:text-gray-400">
-            Full-stack and systems developer. I like to build and deploy production applications, distributed infrastructure, and low-level tooling; spanning from an app on the App Store to a Rust-based CRDT sync engine and a GPU-accelerated UI framework.
+            Full-stack and systems developer. I like to build and deploy production applications, distributed infrastructure, and some low-level tooling; spanning from an app on the App Store to a Non-Profit organization's web platform and a Rust-based CRDT sync engine.
           </p>
           <div className="mt-3 flex flex-wrap gap-1.5">
             <p className="text-sm font-semibold text-black tracking-wide py-0.2">Top Languages:</p>

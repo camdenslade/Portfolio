@@ -424,7 +424,7 @@ function PortfolioPage() {
           </div>
           <div className="mt-5 flex flex-wrap gap-3">
             <a
-              href="/CamSladeResumeJuly.pdf"
+              href="/CamSladeResumeAugust.pdf"
               download
               className="inline-flex items-center gap-1.5 rounded border border-gray-200 bg-gray-50 px-3 py-1.5 text-sm text-gray-700 transition-colors hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800"
             >

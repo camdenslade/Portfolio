@@ -522,7 +522,7 @@ function PortfolioPage() {
             </div>
             <div>
               <p className="font-semibold">Missouri State University</p>
-              <p className="mt-0.5 text-sm text-gray-500 dark:text-gray-400">B.S. Computer Science · B.S. General Mathematics</p>
+              <p className="mt-0.5 text-sm text-gray-500 dark:text-gray-400">B.S. Computer Science · General Mathematics</p>
               <p className="mt-0.5 text-xs text-gray-400 dark:text-gray-500">Expected May 2027</p>
             </div>
           </div>

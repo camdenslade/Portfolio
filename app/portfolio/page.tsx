@@ -10,7 +10,7 @@ const FLAGSHIP_PROJECTS = [
   {
     name: 'Missouri State Lacrosse',
     initials: 'ML',
-    logo: '/logos/mostate.png',
+    logo: '/logos/missouri-state.png',
     role: 'Technology Chair · Developer',
     period: 'Sep 2025 - Present',
     badges: ['Live', 'NonProfit'],
@@ -175,7 +175,7 @@ const EXPERIENCE = [
 ] as const;
 
 const HIGHLIGHTS = [
-  'Built and shipped a live App Store dating app - custom auth, real-time matching, and AWS infrastructure',
+  'Built and shipped a live App Store dating app with custom auth, real-time matching, and AWS infrastructure',
   'Designed a real-time sync architecture on top of Loro CRDTs, compiling a single Rust core to both a Swift XCFramework and a WASM module',
   'Built a semantic binary diff tool that maps changed byte ranges back to source symbols via DWARF debug info',
   'Built a GPU-accelerated UI framework from scratch in Rust using wgpu, SDF shaders, and a shelf-packed Glyphatlas',
@@ -412,7 +412,7 @@ function PortfolioPage() {
             </div>
           </div>
           <p className="mt-4 max-w-xl text-[0.9375rem] leading-relaxed text-gray-600 dark:text-gray-400">
-            Full-stack and systems developer. I like to build and deploy production applications, distributed infrastructure, and some low-level tooling; spanning from an app on the App Store to a Non-Profit organization's web platform and a Rust-based CRDT sync engine.
+            Full-stack and systems developer. I like to build and deploy production applications, distributed infrastructure, and some low-level tooling; spanning from an app on the App Store to a NonProfit organization's web platform and a Rust-based CRDT sync engine.
           </p>
           <div className="mt-3 flex flex-wrap gap-1.5">
             <p className="text-sm font-semibold text-black tracking-wide py-0.2">Top Languages:</p>

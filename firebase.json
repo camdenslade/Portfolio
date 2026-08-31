@@ -6,7 +6,14 @@
       "**/.*",
       "**/node_modules/**"
     ],
-    "cleanUrls": true
+    "cleanUrls": true,
+    "redirects": [
+      {
+        "source": "/po",
+        "destination": "/portfolio",
+        "type": 301
+      }
+    ]
   },
   "functions": [
     {

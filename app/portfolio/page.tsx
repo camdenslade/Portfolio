@@ -367,7 +367,7 @@ function PortfolioPage() {
             className="text-sm text-gray-500 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100">
             GitHub
           </a>
-          <a href="https://linkedin.com/in/camden-slade-230157155" target="_blank" rel="noopener noreferrer"
+          <a href="https://linkedin.com/in/camdenslade" target="_blank" rel="noopener noreferrer"
             className="text-sm text-gray-500 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100">
             LinkedIn
           </a>
@@ -424,7 +424,7 @@ function PortfolioPage() {
           </div>
           <div className="mt-5 flex flex-wrap gap-3">
             <a
-              href="/CamSladeResumeAugust.pdf"
+              href="/CamSladeResumeSeptember.pdf"
               download
               className="inline-flex items-center gap-1.5 rounded border border-gray-200 bg-gray-50 px-3 py-1.5 text-sm text-gray-700 transition-colors hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800"
             >
@@ -544,7 +544,7 @@ function PortfolioPage() {
               className="flex w-fit items-center gap-1.5 text-sm text-gray-500 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100">
               github.com/camdenslade
             </a>
-            <a href="https://linkedin.com/in/camden-slade-230157155" target="_blank" rel="noopener noreferrer"
+            <a href="https://linkedin.com/in/camdenslade" target="_blank" rel="noopener noreferrer"
               className="flex w-fit items-center gap-1.5 text-sm text-gray-500 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100">
               linkedin.com/in/camden-slade-230157155
             </a>

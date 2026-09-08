@@ -43,7 +43,7 @@ export default function IntroCanvasMobile() {
         </Suspense>
       </Canvas>
 
-      {/* Tap hint — visible only when idle */}
+      {/* Tap hint, visible only when idle */}
       {controller.cameraState === 'IDLE' && (
         <div style={{
           position: 'absolute', bottom: '14%', left: 0, right: 0,
@@ -59,7 +59,7 @@ export default function IntroCanvasMobile() {
         </div>
       )}
 
-      {/* Full-screen native DOM overlay — no animations, no inline styles, clean hit testing */}
+      {/* Full-screen native DOM overlay: no animations, no inline styles, clean hit testing */}
       {controller.cameraState === 'ENTER_SCREEN' && (
         <div style={{ position: 'fixed', inset: 0, zIndex: 100 }}>
           <FakeSafariWindow onBack={handleBackOut} />

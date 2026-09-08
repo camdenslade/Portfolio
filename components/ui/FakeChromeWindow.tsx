@@ -85,16 +85,8 @@ export function FakeChromeWindow({
     setActiveView('google');
   }, [setActiveView]);
 
-  const navigateToPdfEditor = useCallback(() => {
-    setActiveView('pdf');
-  }, [setActiveView]);
-
   const navigateToLacrosse = useCallback(() => {
     setActiveView('lacrosse');
-  }, [setActiveView]);
-
-  const navigateToSmokeLauncher = useCallback(() => {
-    setActiveView('smoke-launcher');
   }, [setActiveView]);
 
   const openNewTab = useCallback((view: ViewState = 'google') => {
@@ -367,23 +359,12 @@ export function FakeChromeWindow({
           <button
             type="button"
             onClick={navigateToPortfolio}
-            style={{ display: 'flex', alignItems: 'center', gap: '6px', borderRadius: '4px', padding: '2px 8px', color: '#5f6368', fontSize: '11px', border: 'none', background: 'none', cursor: 'pointer' }}
+            style={{ display: 'flex', alignItems: 'center', gap: '6px', borderRadius: '4px', padding: '2px 10px', color: '#1a73e8', fontSize: '11px', fontWeight: 600, border: 'none', backgroundColor: '#e8f0fe', cursor: 'pointer' }}
           >
             <svg width="12" height="12" viewBox="0 0 16 16" fill="none" style={{ flexShrink: 0 }}>
-              <path d="M2 4a2 2 0 012-2h3l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V4z" fill="#5f6368" opacity="0.5" />
+              <path d="M2 4a2 2 0 012-2h3l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V4z" fill="#1a73e8" opacity="0.85" />
             </svg>
             Portfolio
-          </button>
-          <button
-            type="button"
-            onClick={navigateToPdfEditor}
-            style={{ display: 'flex', alignItems: 'center', gap: '6px', borderRadius: '4px', padding: '2px 8px', color: '#5f6368', fontSize: '11px', border: 'none', background: 'none', cursor: 'pointer' }}
-          >
-            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" style={{ flexShrink: 0 }}>
-              <path d="M4 2h6l3 3v9a2 2 0 01-2 2H4a2 2 0 01-2-2V4a2 2 0 012-2z" fill="#5f6368" opacity="0.5" />
-              <path d="M10 2v3h3" stroke="#ffffff" strokeWidth="1" />
-            </svg>
-            PDF Editor
           </button>
           <button
             type="button"
@@ -395,14 +376,6 @@ export function FakeChromeWindow({
               <path d="M8 2v12M2 8h12" stroke="#ffffff" strokeWidth="1" />
             </svg>
             MSU Lacrosse
-          </button>
-          <button
-            type="button"
-            onClick={navigateToSmokeLauncher}
-            style={{ display: 'flex', alignItems: 'center', gap: '6px', borderRadius: '4px', padding: '2px 8px', color: '#5f6368', fontSize: '11px', border: 'none', background: 'none', cursor: 'pointer' }}
-          >
-            <img src="/smoke-launcher/smoke-transparent.png" width="12" height="12" style={{ flexShrink: 0, borderRadius: '2px', objectFit: 'contain' }} alt="" />
-            Smoke Launcher
           </button>
         </div>
 

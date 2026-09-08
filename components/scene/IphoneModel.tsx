@@ -14,7 +14,7 @@ const LOADED_MODEL_SCALE = 1.0;
 export const IPHONE_SCREEN_OVERLAY = {
   position: [-0.04, 0.025, 0] as [number, number, number],
   rotation: [0, -Math.PI / 2, 0] as [number, number, number],
-  width: 30.8, // model-local units — match to the screen mesh width
+  width: 30.8, // model-local units, match to the screen mesh width
 };
 
 export const IPHONE_SCREEN_PX = { w: 390, h: 844 };

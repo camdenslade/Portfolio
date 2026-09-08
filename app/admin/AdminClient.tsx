@@ -26,8 +26,7 @@ const ALL_PROJECTS: { name: string; category: string }[] = [
 
 type Overrides = Record<string, string[]>;
 
-// ── Login screen ──────────────────────────────────────────────────────────────
-
+// Login screen
 function LoginForm() {
   const [email, setEmail]       = useState('');
   const [password, setPassword] = useState('');
@@ -83,8 +82,7 @@ function LoginForm() {
   );
 }
 
-// ── Badge toggle ──────────────────────────────────────────────────────────────
-
+// Badge toggle
 function BadgeToggle({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) {
   return (
     <button
@@ -100,8 +98,7 @@ function BadgeToggle({ label, active, onClick }: { label: string; active: boolea
   );
 }
 
-// ── Custom tag input ──────────────────────────────────────────────────────────
-
+// Custom tag input
 function CustomTagInput({ projectName, activeBadges, onAdd }: {
   projectName: string;
   activeBadges: string[];
@@ -136,8 +133,7 @@ function CustomTagInput({ projectName, activeBadges, onAdd }: {
   );
 }
 
-// ── Main admin panel ──────────────────────────────────────────────────────────
-
+// Main admin panel
 function AdminPanel({ user, onLogout }: { user: User; onLogout: () => void }) {
   const [overrides, setOverrides]   = useState<Overrides>({});
   const [original, setOriginal]     = useState<Overrides>({});
@@ -301,8 +297,7 @@ function AdminPanel({ user, onLogout }: { user: User; onLogout: () => void }) {
   );
 }
 
-// ── Root ──────────────────────────────────────────────────────────────────────
-
+// Root
 export default function AdminClient() {
   const [user, setUser] = useState<User | null>(null);
   const [checked, setChecked] = useState(false);

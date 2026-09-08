@@ -209,14 +209,14 @@ export const Toolbar = ({
         <input
           type="text"
           className="page-nav-input"
-          value={isEditingPage ? pageInputValue : (hasPages ? String(currentPage + 1) : '—')}
+          value={isEditingPage ? pageInputValue : (hasPages ? String(currentPage + 1) : '-')}
           onChange={(e) => setPageInputValue(e.target.value)}
           onFocus={handlePageInputFocus}
           onBlur={handlePageInputBlur}
           onKeyDown={handlePageInputKeyDown}
           disabled={!hasPages}
         />
-        <span className="page-nav-total">of {totalPages || '—'}</span>
+        <span className="page-nav-total">of {totalPages || '-'}</span>
         <button className="toolbar-icon-btn" onClick={onNextPage} disabled={!hasPages || currentPage >= totalPages - 1} title="Next page">
           <IconChevronRight />
         </button>

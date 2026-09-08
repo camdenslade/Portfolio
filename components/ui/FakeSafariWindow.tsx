@@ -122,19 +122,6 @@ const FAVOURITES: FavItem[] = [
     ),
   },
   {
-    label: 'PDF Editor',
-    view: 'pdf',
-    icon: (
-      <div style={{ width: 60, height: 60, borderRadius: 14, background: 'linear-gradient(135deg,#ea4335,#b71c1c)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <svg width="30" height="30" viewBox="0 0 24 24" fill="none">
-          <path d="M6 2h8l4 4v16H6V2z" fill="white" opacity="0.9" />
-          <path d="M14 2v4h4" stroke="#ea4335" strokeWidth="1.2" />
-          <path d="M9 13h6M9 16h4" stroke="#ea4335" strokeWidth="1.4" strokeLinecap="round" />
-        </svg>
-      </div>
-    ),
-  },
-  {
     label: 'MSU Lacrosse',
     view: 'lacrosse',
     icon: (

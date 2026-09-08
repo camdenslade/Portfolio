@@ -343,7 +343,7 @@ export const PdfEditorApp = () => {
 
       if (isCmdOrCtrl && event.key.toLowerCase() === 'g') {
         event.preventDefault();
-        const raw = window.prompt(`Go to page (1–${session.pages.length})`);
+        const raw = window.prompt(`Go to page (1-${session.pages.length})`);
         if (raw) {
           const num = parseInt(raw, 10);
           if (num >= 1 && num <= session.pages.length) {

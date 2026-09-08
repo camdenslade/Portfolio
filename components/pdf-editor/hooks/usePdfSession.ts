@@ -403,7 +403,7 @@ export const usePdfSession = () => {
                 tf.setText(fv.value);
               }
             } catch {
-              // Field may not exist or be a different type — skip
+              // Field may not exist or be a different type, skip
             }
           }
           form.flatten();

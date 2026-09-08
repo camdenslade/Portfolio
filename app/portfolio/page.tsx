@@ -4,166 +4,23 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { Suspense, useEffect, useState } from 'react';
 
+import {
+  FLAGSHIP_PROJECTS,
+  PROJECT_CATEGORIES,
+  useBadgeOverrides,
+} from './projects-data';
+
 // Data
 
-const FLAGSHIP_PROJECTS = [
-  {
-    name: 'Missouri State Lacrosse',
-    initials: 'ML',
-    logo: '/logos/missouri-state.png',
-    role: 'Technology Chair · Developer',
-    period: 'Sep 2025 - Present',
-    badges: ['Live', 'NonProfit'],
-    summary:
-      'Built and maintained a full-stack platform serving the Missouri State University lacrosse community, including players, coaches, alumni, and family across both teams. Supports media streaming, roster management, and e-commerce for active team operations, including payment processing and merchandise fulfillment integrations.',
-    stack: ['React', 'Spring Boot', 'Firebase Auth', 'Cloudflare', 'AWS (EC2, SES, S3)'],
-    links: [
-      { label: 'Site', href: 'https://missouristatelacrosse.com' },
-      { label: 'GitHub', href: 'https://github.com/camdenslade/missouristatelacrosse' },
-      { label: 'Details', href: '/portfolio/projects/missouri-state-lacrosse' },
-    ],
-  },
-  {
-    name: 'Even Dating',
-    initials: 'EV',
-    logo: '/logos/even.png',
-    role: 'Founder & Lead Developer',
-    period: 'Dec 2025 - May 2026',
-    badges: ['iOS', 'Live', 'Startup'],
-    summary:
-      'Founder and lead developer of a location-based dating app designed for college communities, live on the App Store but server is currently offline and no longer maintained. Designed custom Cognito auth flows, real-time swipe matching, and a Redis-backed queue system. Deployed and iterating on scalable production infrastructure on AWS.',
-    stack: ['Swift', 'SwiftUI', 'NestJS', 'PostgreSQL', 'AWS (Cognito, SNS, S3, EC2)', 'Redis'],
-    links: [{ label: 'App Store', href: 'https://apps.apple.com/us/app/even-dating/id6756533343' }, { label: 'Details', href: '/portfolio/projects/even-dating' }],
-  },
-  {
-    name: 'Versa',
-    initials: 'VS',
-    logo: '/logos/Versa.png',
-    role: 'Developer',
-    period: 'Apr 2026 - May 2026',
-    badges: ['In Progress', 'iOS'],
-    summary:
-      'A real-time collaborative sync architecture built on top of Loro CRDTs. A single Rust core compiles to both a Swift XCFramework (via UniFFI) and a WASM module (via wasm-bindgen), sharing identical conflict-resolution logic across iOS and web. A stateless Go WebSocket relay fans out binary diffs; each client merges them locally using version vectors so only deltas travel the wire.',
-    stack: ['Go', 'Rust', 'Swift', 'SwiftUI', 'UniFFI', 'WASM', 'wasm-bindgen', 'Loro CRDTs', 'PostgreSQL'],
-    links: [{ label: 'GitHub', href: 'https://github.com/camdenslade/versa' }, { label: 'Details', href: '/portfolio/projects/versa' }],
-  },
-];
-
-const PROJECT_CATEGORIES = [
-  {
-    label: 'Mobile Apps',
-    projects: [
-      {
-        name: 'TabUp',
-        initials: 'TU',
-        logo: '/logos/tabup.png',
-        role: 'Team Lead · API & Deployment Engineer',
-        period: 'Jan 2026 - May 2026',
-        badges: ['TestFlight'],
-        summary:
-          'Bill-splitting app focused on real-world usability, including receipt capture, flexible split logic, and payout-aware reminders without directly handling funds.',
-        stack: ['React Native', 'Expo', 'TypeScript', 'NestJS', 'PostgreSQL', 'AWS', 'Firebase Auth', 'Twilio SMS'],
-        links: [{ label: 'GitHub', href: 'https://github.com/camdenslade/TabUp' }, { label: 'TestFlight', href: 'https://testflight.apple.com/join/HZDcwfxr' }, { label: 'Details', href: '/portfolio/projects/tabup' }],
-      },
-    ],
-  },
-  {
-    label: 'Desktop',
-    projects: [
-      {
-        name: 'Smoke Launcher',
-        initials: 'SL',
-        logo: '/logos/smoke-transparent.png',
-        role: 'Author',
-        period: 'Mar 2026 - Present',
-        badges: ['Live', 'macOS', 'Open Source'],
-        summary:
-          'Native macOS launcher that enables running Windows games via Wine, abstracting the full Wine compatibility layer into a user-friendly SwiftUI interface. Features automated Steam ACF manifest parsing, per-bottle DXVK/ESync configuration, and dynamic asset fetching from Steam CDN.',
-        stack: ['Swift', 'SwiftUI', 'Wine', 'DXVK', 'Steam CDN'],
-        links: [
-          { label: 'GitHub', href: 'https://github.com/camdenslade/Smoke-Launcher' },
-          { label: 'Details', href: '/portfolio/projects/smoke-launcher' },
-        ],
-      },
-    ],
-  },
-  {
-    label: 'Infrastructure',
-    projects: [
-      {
-        name: 'Kimbu',
-        initials: 'KB',
-        logo: '/logos/Kimbu.png',
-        role: 'Author',
-        period: null,
-        badges: ['In Progress'],
-        summary:
-          'A multi-tenant authentication platform built as an Auth0 alternative. Provides JWT lifecycle with refresh token rotation, Argon2id password hashing, SMS OTP, OAuth, RBAC, and full audit logging. Stateless design with Redis for ephemeral state and PostgreSQL for permanent records.',
-        stack: ['TypeScript', 'NestJS', 'PostgreSQL', 'Redis', 'Docker', 'JWT', 'Argon2'],
-        links: [{ label: 'GitHub', href: 'https://github.com/camdenslade/kimbu' }, { label: 'Details', href: '/portfolio/projects/kimbu' }],
-      },
-    ],
-  },
-  {
-    label: 'Open Source & Research',
-    projects: [
-      {
-        name: 'Glyph',
-        initials: 'BG',
-        logo: '/logos/Glyph.png',
-        role: 'Author',
-        period: null,
-        badges: ['In Progress', 'Open Source'],
-        summary:
-          'A GPU-accelerated reactive UI framework for Rust. Renders a declarative View tree via wgpu with SDF rounded-rect shaders, cosmic-text Glyphatlas, Taffy flexbox layout, and signal-based reactivity. Optional macOS native bridge via objc2.',
-        stack: ['Rust', 'wgpu', 'WGSL', 'winit', 'taffy', 'cosmic-text', 'objc2'],
-        links: [{ label: 'GitHub', href: 'https://github.com/camdenslade/Glyph' }, { label: 'Details', href: 'https://glyph.cslade.space' }],
-      },
-       {
-        name: 'Binate',
-        initials: 'BN',
-        logo: '/logos/Binate.png',
-        role: 'Author',
-        period: null,
-        badges: ['Open Source'],
-        summary:
-          'A semantic binary diff tool that compares Rust binaries by masking known sources of non-determinism (build IDs, timestamps, absolute paths), then maps changed byte ranges back to source symbols and file locations via DWARF debug info. Used for build reproducibility validation in CI pipelines.',
-        stack: ['Rust', 'gimli (DWARF)', 'iced-x86', 'rayon', 'object', 'memmap2'],
-        links: [{ label: 'GitHub', href: 'https://github.com/camdenslade/binate' }, { label: 'Details', href: '/portfolio/projects/binate' }],
-      },
-      {
-        name: 'Nova Dom',
-        initials: 'ND',
-        logo: '/logos/nova-dom.png',
-        role: 'Author',
-        period: null,
-        badges: ['Open Source'],
-        summary:
-          'Open-source DOM editing engine for React that enables visual editing and no-code tooling through a flat document tree architecture with efficient diffing and undo/redo systems.',
-        stack: ['TypeScript', 'React 19', 'Zustand', 'Vite'],
-        links: [{ label: 'GitHub', href: 'https://github.com/camdenslade/nova-dom' }, { label: 'Details', href: '/portfolio/projects/nova-dom' }],
-      },
-    ],
-  },
-  { label: 'Contributions',
-    projects: [
-      {
-        name: 'Loro',
-        initials: 'LR',
-        logo: '/logos/Loro.svg',
-        role: 'Contributor',
-        period: null,
-        badges: ['Open Source'],
-        summary:
-          'A collaborative editing library for building real-time applications with conflict-free replicated data types (CRDTs).',
-        stack: ['Rust'],
-        links: [{ label: 'GitHub', href: 'https://github.com/loro-dev/loro' }, { label: 'Details', href: 'https://loro.dev/' }],
-      }
-    ],
-  },
-];
-
 const EXPERIENCE = [
+  {
+    role: 'Technology Chair',
+    company: 'Missouri State University Lacrosse · 501(c) NonProfit',
+    logo: '/logos/missouri-state.png',
+    period: 'Sep 2025 - Present',
+    detail:
+      "Sole developer of the platform serving both the men's and women's programs, along with coaches, alumni, and family. Built and maintain media streaming, roster management, and e-commerce with payment processing, on infrastructure I designed and deployed (React, Spring Boot, Cloudflare, AWS).",
+  },
   {
     role: 'Grading Assistant',
     company: 'Missouri State University · Dept. of Mathematics',
@@ -175,7 +32,7 @@ const EXPERIENCE = [
 ] as const;
 
 const HIGHLIGHTS = [
-  'Built and shipped a live App Store dating app with custom auth, real-time matching, and AWS infrastructure',
+  'Founded, built, and shipped an App Store dating app with custom auth, real-time matching, and AWS infrastructure',
   'Designed a real-time sync architecture on top of Loro CRDTs, compiling a single Rust core to both a Swift XCFramework and a WASM module',
   'Built a semantic binary diff tool that maps changed byte ranges back to source symbols via DWARF debug info',
   'Built a GPU-accelerated UI framework from scratch in Rust using wgpu, SDF shaders, and a shelf-packed Glyphatlas',
@@ -234,6 +91,8 @@ const BADGE_STYLES: Record<string, string> = {
   'Rust':                   BADGE_STYLE,
   'React':                  BADGE_STYLE,
   'No Longer Maintained':   BADGE_STYLE,
+  'Discontinued':           BADGE_STYLE,
+  'MCP':                    BADGE_STYLE,
 };
 
 // Project row
@@ -297,19 +156,6 @@ function ProjectRow({ project, badges }: { project: Project; badges: string[] })
 
 // Component
 
-const GET_BADGE_URL = process.env.NEXT_PUBLIC_GET_BADGE_URL ?? '';
-
-function useBadgeOverrides() {
-  const [overrides, setOverrides] = useState<Record<string, string[]>>({});
-  useEffect(() => {
-    fetch(GET_BADGE_URL)
-      .then(r => r.ok ? r.json() : { overrides: {} })
-      .then((data: { overrides: Record<string, string[]> }) => setOverrides(data.overrides ?? {}))
-      .catch(() => {});
-  }, []);
-  return overrides;
-}
-
 function PortfolioPage() {
   const searchParams = useSearchParams();
   const embed = searchParams.get('embed') === 'true';
@@ -356,7 +202,7 @@ function PortfolioPage() {
   return (
     <main className="min-h-dvh bg-white text-gray-900 dark:bg-gray-950 dark:text-gray-100 transition-colors duration-200">
 
-      {/* ── Nav ── */}
+      {/* Nav */}
       <nav className="border-b border-gray-100 dark:border-gray-800">
         <div className="mx-auto flex max-w-2xl items-center gap-6 px-5 py-3.5 md:px-6">
           <Link href="/portfolio" className="flex items-center">
@@ -412,7 +258,7 @@ function PortfolioPage() {
             </div>
           </div>
           <p className="mt-4 max-w-xl text-[0.9375rem] leading-relaxed text-gray-600 dark:text-gray-400">
-            Full-stack and systems developer. I like to build and deploy production applications, distributed infrastructure, and some low-level tooling; spanning from an app on the App Store to a NonProfit organization's web platform and a Rust-based CRDT sync engine.
+            Full-stack and systems developer. I like to build and deploy production applications, distributed infrastructure, and some low-level tooling; spanning from a code-graph MCP server for coding agents to a NonProfit organization's web platform and a Rust-based CRDT sync engine.
           </p>
           <div className="mt-3 flex flex-wrap gap-1.5">
             <p className="text-sm font-semibold text-black tracking-wide py-0.2">Top Languages:</p>
@@ -424,7 +270,7 @@ function PortfolioPage() {
           </div>
           <div className="mt-5 flex flex-wrap gap-3">
             <a
-              href="/CamSladeResumeSeptember.pdf"
+              href="/CamdenSladeResumeSeptember.pdf"
               download
               className="inline-flex items-center gap-1.5 rounded border border-gray-200 bg-gray-50 px-3 py-1.5 text-sm text-gray-700 transition-colors hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800"
             >
@@ -546,7 +392,7 @@ function PortfolioPage() {
             </a>
             <a href="https://linkedin.com/in/camdenslade" target="_blank" rel="noopener noreferrer"
               className="flex w-fit items-center gap-1.5 text-sm text-gray-500 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100">
-              linkedin.com/in/camden-slade-230157155
+              linkedin.com/in/camdenslade
             </a>
           </div>
         </section>
@@ -554,11 +400,8 @@ function PortfolioPage() {
       </div>
 
       <footer className="border-t border-gray-100 dark:border-gray-800">
-        <div className="mx-auto max-w-2xl px-5 py-5 md:px-6 flex flex-wrap items-center justify-between gap-4">
+        <div className="mx-auto max-w-2xl px-5 py-5 md:px-6">
           <p className="text-xs text-gray-400 dark:text-gray-500">© 2026 Camden Slade</p>
-          <div className="flex flex-wrap gap-4">
-            <a href="/pdf" className="text-xs text-gray-400 transition-colors hover:text-gray-700 dark:text-gray-500 dark:hover:text-gray-300">PDF Editor</a>
-          </div>
         </div>
       </footer>
     </main>

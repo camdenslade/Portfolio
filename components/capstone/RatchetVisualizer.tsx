@@ -44,7 +44,7 @@ const ParticipantCard: React.FC<{ participant: RatchetParticipantState }> = ({ p
 
       <div className="mt-3 grid grid-cols-2 gap-2 border-t border-gray-100 pt-3 dark:border-gray-800">
         <div>
-          <p className="text-[10px] uppercase tracking-widest text-gray-400 dark:text-gray-500">Send chain</p>
+          <p className="text-[10px] uppercase tracking-widest text-gray-400 dark:text-gray-500">Sequence (send)</p>
           <p className="mt-0.5 font-mono text-xs text-gray-600 dark:text-gray-300">
             {participant.sendingChain ? participant.sendingChain.chainKey.slice(0, 8) : 'inactive'}
           </p>
@@ -53,7 +53,7 @@ const ParticipantCard: React.FC<{ participant: RatchetParticipantState }> = ({ p
           </p>
         </div>
         <div>
-          <p className="text-[10px] uppercase tracking-widest text-gray-400 dark:text-gray-500">Recv chain</p>
+          <p className="text-[10px] uppercase tracking-widest text-gray-400 dark:text-gray-500">Sequence (recv)</p>
           <p className="mt-0.5 font-mono text-xs text-gray-600 dark:text-gray-300">
             {participant.receivingChain ? participant.receivingChain.chainKey.slice(0, 8) : 'inactive'}
           </p>
@@ -94,7 +94,7 @@ export const RatchetVisualizer: React.FC<RatchetVisualizerProps> = ({ simulation
             <p className="truncate text-gray-600 dark:text-gray-300">pk: {wireCiphertext.ephemeralPublicKey}</p>
           </div>
         ) : (
-          <p className="mt-2 text-xs text-gray-400 dark:text-gray-500">Idle — no frame in transit.</p>
+          <p className="mt-2 text-xs text-gray-400 dark:text-gray-500">Idle, no frame in transit.</p>
         )}
       </div>
     </div>

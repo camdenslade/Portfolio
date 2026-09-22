@@ -37,3 +37,16 @@ body {
   from { transform: rotate(0deg); }
   to   { transform: rotate(360deg); }
 }
+
+/* Shiki dual-theme code blocks (capstone page): each token carries both a
+   --shiki-light and --shiki-dark color; swap which one is live based on
+   the same .dark class the rest of the site's theme toggle already sets. */
+.capstone-code .shiki,
+.capstone-code .shiki span {
+  color: var(--shiki-light);
+}
+
+.dark .capstone-code .shiki,
+.dark .capstone-code .shiki span {
+  color: var(--shiki-dark);
+}

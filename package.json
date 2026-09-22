@@ -23,6 +23,7 @@
     "pdfjs-dist": "^4.8.69",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
+    "shiki": "^1.29.2",
     "three": "^0.173.0"
   },
   "devDependencies": {

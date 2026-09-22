@@ -6,6 +6,7 @@ import { initSimulation } from '@/lib/capstone/protocolEngine';
 import { DoubleRatchetSimulationState } from '@/types/capstone';
 import {
   HOOK,
+  DH_BACKGROUND,
   SYMMETRIC_RATCHET,
   DH_RATCHET,
   CODE_SNIPPETS,
@@ -14,6 +15,8 @@ import {
   type NarrativeSection,
 } from '@/lib/capstone/slidesData';
 import MathBlock from '@/components/capstone/MathBlock';
+import Prose from '@/components/capstone/Prose';
+import CodeBlock from '@/components/capstone/CodeBlock';
 import RatchetVisualizer from '@/components/capstone/RatchetVisualizer';
 import AdversaryHarness from '@/components/capstone/AdversaryHarness';
 
@@ -45,7 +48,7 @@ function MoonIcon() {
   );
 }
 
-// One prose section: eyebrow label, heading, numbered blocks — matches the
+// One prose section: eyebrow label, heading, numbered blocks. Matches the
 // "Notable work" list pattern used on the project detail pages.
 function Section({ section }: { section: NarrativeSection }) {
   return (
@@ -62,9 +65,13 @@ function Section({ section }: { section: NarrativeSection }) {
               {String(i + 1).padStart(2, '0')}
             </span>
             <div>
-              {block.heading && <p className="font-semibold">{block.heading}</p>}
+              {block.heading && (
+                <p className="font-semibold">
+                  <Prose text={block.heading} />
+                </p>
+              )}
               <p className="mt-1 text-[0.9375rem] leading-relaxed text-gray-600 dark:text-gray-300">
-                {block.text}
+                <Prose text={block.text} />
               </p>
               {block.math && (
                 <div className="mt-3 overflow-x-auto rounded-lg border border-gray-100 bg-gray-50 px-4 py-3 dark:border-gray-800 dark:bg-gray-900">
@@ -102,10 +109,11 @@ export const CapstoneDeck: React.FC = () => {
 
   const jumpLinks = [
     { href: '#hook', label: 'The problem' },
+    { href: '#background', label: 'DH background' },
     { href: '#symmetric-ratchet', label: 'Gear 1: Forward secrecy' },
     { href: '#dh-ratchet', label: 'Gear 2: Self-healing' },
     { href: '#the-code', label: 'The real code' },
-    { href: '#live-demo', label: 'Try it' },
+    { href: '#live-demo', label: 'Live demo' },
     { href: '#the-math', label: 'The math' },
   ];
 
@@ -138,7 +146,7 @@ export const CapstoneDeck: React.FC = () => {
             Continuous Key Exchange &amp; The Double Ratchet
           </h1>
           <p className="mt-4 max-w-2xl text-xl leading-snug text-gray-500 dark:text-gray-400">
-            How a messaging protocol locks a thief out of a conversation it has already broken into — and why that shouldn't be possible.
+            How a messaging protocol locks a thief out of a conversation it has already broken into, and why that shouldn't be possible.
           </p>
 
           <nav className="mt-6 flex flex-wrap gap-x-5 gap-y-2 border-t border-gray-100 pt-5 dark:border-gray-800">
@@ -156,6 +164,7 @@ export const CapstoneDeck: React.FC = () => {
 
         <div className="mt-16 space-y-20">
           <Section section={HOOK} />
+          <Section section={DH_BACKGROUND} />
           <Section section={SYMMETRIC_RATCHET} />
           <Section section={DH_RATCHET} />
 
@@ -168,12 +177,7 @@ export const CapstoneDeck: React.FC = () => {
               The two gears, in actual code
             </h2>
             <p className="mt-4 max-w-2xl text-[0.9375rem] leading-relaxed text-gray-600 dark:text-gray-300">
-              Everything above is implemented for real, in Rust, as part of this capstone — not
-              pseudocode. Below are three excerpts from that implementation, each one comment
-              explaining what a line does in plain English, not just what it's called. You don't
-              need to read Rust to follow this talk; skip ahead to the live demo if code isn't your
-              thing. The full source, with tests proving forward secrecy and self-healing actually
-              hold, is linked at the end.
+              <Prose text="Everything above is implemented for real, in Rust, as part of this capstone, not pseudocode. Below are three excerpts from that implementation, each with comments explaining what a line does in plain English, not just what it's called. Following the Rust is not required to follow the rest of this talk. The full source, with tests proving forward secrecy and self-healing actually hold, is linked at the end." />
             </p>
 
             <div className="mt-8 space-y-10">
@@ -184,11 +188,9 @@ export const CapstoneDeck: React.FC = () => {
                     <span className="font-mono text-xs text-gray-400 dark:text-gray-500">{snippet.file}</span>
                   </div>
                   <p className="mt-1 text-[0.9375rem] leading-relaxed text-gray-600 dark:text-gray-300">
-                    {snippet.intro}
+                    <Prose text={snippet.intro} />
                   </p>
-                  <pre className="mt-3 overflow-x-auto rounded-lg border border-gray-100 bg-gray-50 p-4 text-xs leading-relaxed dark:border-gray-800 dark:bg-gray-900">
-                    <code className="font-mono text-gray-700 dark:text-gray-300">{snippet.code}</code>
-                  </pre>
+                  <CodeBlock code={snippet.code} />
                 </div>
               ))}
             </div>
@@ -199,13 +201,9 @@ export const CapstoneDeck: React.FC = () => {
             <p className="text-[11px] uppercase tracking-widest text-gray-400 dark:text-gray-500">
               See it happen
             </p>
-            <h2 className="mt-2 text-2xl font-bold tracking-tight md:text-3xl">Try it yourself</h2>
+            <h2 className="mt-2 text-2xl font-bold tracking-tight md:text-3xl">Live demo</h2>
             <p className="mt-4 max-w-2xl text-[0.9375rem] leading-relaxed text-gray-600 dark:text-gray-300">
-              This is a live simulation of the state machine above — not a canned animation. Send a
-              few messages and watch the sequence numbers and chain keys advance (Gear 1). Then
-              corrupt Alice's memory and watch the state turn red, exactly like the cold-boot attack
-              from the introduction. Finally, turn the DH ratchet and watch it turn green again — the
-              same self-healing round trip Gear 2 describes, running on real code.
+              <Prose text="This is a live simulation of the two recurrence relations above, not a canned animation. The walkthrough on the right runs one step at a time: watch each sequence advance a term at a time as messages are sent (Gear 1), then Alice's state gets compromised and her box turns red, exactly like the cold-boot attack from the introduction, and finally a fresh Diffie-Hellman exchange re-seeds her sequence and the state turns green again, the same self-healing round trip Gear 2 describes, running on real code." />
             </p>
 
             <div className="mt-8 grid gap-8 sm:grid-cols-2">
@@ -240,19 +238,19 @@ export const CapstoneDeck: React.FC = () => {
               Making the intuition precise
             </h2>
             <p className="mt-4 max-w-2xl text-[0.9375rem] leading-relaxed text-gray-600 dark:text-gray-300">
-              {MATH_INTRO.text}
+              <Prose text={MATH_INTRO.text} />
             </p>
 
             <div className="mt-8 space-y-8">
               <div>
                 <p className="text-[0.9375rem] leading-relaxed text-gray-600 dark:text-gray-300">
-                  {MATH_REDUCTION.statement}
+                  <Prose text={MATH_REDUCTION.statement} />
                 </p>
                 <div className="mt-3 overflow-x-auto rounded-lg border border-gray-100 bg-gray-50 px-4 py-3 dark:border-gray-800 dark:bg-gray-900">
                   <MathBlock math={MATH_REDUCTION.math} block />
                 </div>
                 <p className="mt-3 text-[0.9375rem] italic leading-relaxed text-gray-500 dark:text-gray-400">
-                  {MATH_REDUCTION.plainEnglish}
+                  <Prose text={MATH_REDUCTION.plainEnglish} />
                 </p>
               </div>
 
@@ -262,7 +260,7 @@ export const CapstoneDeck: React.FC = () => {
                   <MathBlock math={MATH_REDUCTION.healing.math} block />
                 </div>
                 <p className="mt-3 text-[0.9375rem] italic leading-relaxed text-gray-500 dark:text-gray-400">
-                  {MATH_REDUCTION.healing.plainEnglish}
+                  <Prose text={MATH_REDUCTION.healing.plainEnglish} />
                 </p>
               </div>
             </div>

@@ -177,7 +177,7 @@ export const CapstoneDeck: React.FC = () => {
               The two gears, in actual code
             </h2>
             <p className="mt-4 max-w-2xl text-[0.9375rem] leading-relaxed text-gray-600 dark:text-gray-300">
-              <Prose text="Everything above is implemented for real, in Rust, as part of this capstone, not pseudocode. Below are three excerpts from that implementation, each with comments explaining what a line does in plain English, not just what it's called. Following the Rust is not required to follow the rest of this talk. The full source, with tests proving forward secrecy and self-healing actually hold, is linked at the end." />
+              <Prose text="Everything above is implemented below in Rust as a sideshoot of this presentation. Below are three excerpts from that implementation, each with comments explaining what a line does in plain English, not just what it's called. Following the Rust is not required to follow the rest of this talk. The full source, with tests proving forward secrecy and self-healing actually hold, is linked at the end if anybody is curious." />
             </p>
 
             <div className="mt-8 space-y-10">
@@ -203,7 +203,7 @@ export const CapstoneDeck: React.FC = () => {
             </p>
             <h2 className="mt-2 text-2xl font-bold tracking-tight md:text-3xl">Live demo</h2>
             <p className="mt-4 max-w-2xl text-[0.9375rem] leading-relaxed text-gray-600 dark:text-gray-300">
-              <Prose text="This is a live simulation of the two recurrence relations above, not a canned animation. The walkthrough on the right runs one step at a time: watch each sequence advance a term at a time as messages are sent (Gear 1), then Alice's state gets compromised and her box turns red, exactly like the cold-boot attack from the introduction, and finally a fresh Diffie-Hellman exchange re-seeds her sequence and the state turns green again, the same self-healing round trip Gear 2 describes, running on real code." />
+              <Prose text="This is a live simulation of the two recurrence relations above. The walkthrough on the right runs one step at a time: watch each sequence advance a term at a time as messages are sent (Gear 1), then Alice's state gets compromised and her box turns red, exactly like the cold-boot attack from the introduction, and finally a fresh Diffie-Hellman exchange re-seeds her sequence and the state turns green again, the same self-healing round trip Gear 2 describes, running on real code." />
             </p>
 
             <div className="mt-8 grid gap-8 sm:grid-cols-2">

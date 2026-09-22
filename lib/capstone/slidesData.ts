@@ -55,7 +55,7 @@ export const DH_BACKGROUND: NarrativeSection = {
   title: 'One piece of number theory this whole talk rests on',
   blocks: [
     {
-      text: "There is a 1976 result that everything from here on depends on: two people can agree on a shared value over a channel someone else is fully watching, and that observer still can't reconstruct it. That sounds impossible the first time you hear it, so here is the shape of it, since we will use this exact construction twice more later in the talk.",
+      text: "There is an idea from 1976 that everything from here on depends on: two people can agree on a shared value over a channel someone else is fully watching, and that observer still can't reconstruct it. That sounds impossible the first time you hear it, so here is the shape of it, since we will use this exact construction twice more later in the talk.",
     },
     {
       heading: 'Two exponents, one shared base',

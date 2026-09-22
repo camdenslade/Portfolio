@@ -76,48 +76,17 @@ const PROJECTS = {
     stack: ['TypeScript', 'Node.js 20+', 'tree-sitter', 'tree-sitter-typescript', 'tree-sitter-java', 'better-sqlite3', 'Model Context Protocol SDK', 'chokidar', 'commander'],
   },
 
-  'tabup': {
-    name: 'TabUp',
-    logo: '/logos/tabup.png',
-    tagline: 'A bill-splitting app built for real-world usability.',
-    role: 'Team Lead · API & Deployment Engineer',
-    period: 'Jan 2026 - Present',
-    links: [
-      { label: 'GitHub', href: 'https://github.com/camdenslade/TabUp' },
-    ],
-    overview: `TabUp is a mobile bill-splitting application focused on the friction points that existing apps get wrong. Rather than approximating splits or requiring Venmo to settle up, TabUp handles the full flow - from scanning a receipt to tracking who owes what and sending reminders - without ever touching funds directly.\n\nAs team lead, I architected the system, led the backend and infrastructure work, and coordinated frontend development across the team.`,
-    highlights: [
-      {
-        title: 'Receipt capture & parsing',
-        desc: 'Users can photograph a physical receipt. The app parses line items and totals, letting each person claim specific items or split them proportionally.',
-      },
-      {
-        title: 'Flexible split logic',
-        desc: 'Supports equal splits, item-based splits, and custom percentage breakdowns. Any combination works across a single bill.',
-      },
-      {
-        title: 'Payout-aware reminders',
-        desc: 'Tracks outstanding balances per person and sends configurable SMS reminders via Twilio - without handling money or requiring a payment account.',
-      },
-      {
-        title: 'Auth & persistence',
-        desc: 'Firebase Auth for user identity, NestJS backend for business logic and split calculations, PostgreSQL for persistent bill and balance records, deployed on AWS.',
-      },
-    ],
-    stack: ['React Native', 'Expo', 'TypeScript', 'NestJS', 'PostgreSQL', 'AWS', 'Firebase Auth', 'Twilio SMS'],
-  },
-
   'missouri-state-lacrosse': {
     name: 'Missouri State Lacrosse',
     logo: '/logos/missouri-state.png',
     tagline: 'A full-stack platform for the Missouri State lacrosse community.',
-    role: 'Technology Chair · 501(c) NonProfit',
+    role: 'Software Engineer',
     period: 'Sep 2025 - Present',
     links: [
       { label: 'Site', href: 'https://missouristatelacrosse.com' },
       { label: 'GitHub', href: 'https://github.com/camdenslade/missouristatelacrosse' },
     ],
-    overview: `Missouri State Lacrosse is a full-stack web platform I built and maintain as Technology Chair for the Missouri State University lacrosse program - a 501(c) nonprofit serving both the men's and women's teams, along with coaches, alumni, and family.\n\nThe platform is actively used for team operations including media, roster management, e-commerce, and communications. Everything runs on infrastructure I designed and deployed.`,
+    overview: `Missouri State Lacrosse is a full-stack web platform I built and maintain as a player and Technology Chair for the Missouri State University lacrosse program - a 501(c) nonprofit serving both the men's and women's teams, along with coaches, alumni, and family.\n\nThe platform is actively used for team operations including media, roster management, e-commerce, and communications, having processed over $17,000 in payments and merchandise fulfillment while sustaining 100% streaming uptime during team events. Everything runs on infrastructure I designed and deployed.`,
     highlights: [
       {
         title: 'Media streaming',
@@ -129,7 +98,7 @@ const PROJECTS = {
       },
       {
         title: 'E-commerce & merchandise',
-        desc: 'Integrated payment processing and merchandise fulfillment for team gear and apparel. Orders flow through to a fulfillment backend without manual intervention.',
+        desc: 'Integrated payment processing and merchandise fulfillment for team gear and apparel, processing over $17,000 to date. Orders flow through to a fulfillment backend without manual intervention.',
       },
       {
         title: 'Multi-team support',
@@ -230,37 +199,6 @@ const PROJECTS = {
       },
     ],
     stack: ['Go', 'Rust', 'Swift', 'SwiftUI', 'UniFFI', 'WASM', 'wasm-bindgen', 'Loro CRDTs', 'PostgreSQL'],
-  },
-
-  'qravo': {
-    name: 'Qravo',
-    logo: '/logos/qravo.png',
-    tagline: 'A QR code restaurant ordering system with real-time kitchen dashboard and Square payments.',
-    role: 'Developer',
-    period: 'Feb 2026 - Present',
-    links: [
-      { label: 'GitHub', href: 'https://github.com/camdenslade/qravo' },
-    ],
-    overview: `Qravo is a QR code ordering platform for restaurants. Customers scan a code at their table, browse the menu, customize items with modifier groups, and pay -no app download required. The kitchen gets a real-time order dashboard that updates the moment an order is placed.\n\nRestaurant owners manage their entire operation through an admin interface: menu items with photos and modifiers, per-table QR codes, real-time order status, and Square payment OAuth. The platform is multi-tenant -each restaurant has its own slug, isolated Firestore data, and configurable theme color.`,
-    highlights: [
-      {
-        title: 'Modifier-aware ordering',
-        desc: 'Menu items support modifier groups with required or optional selections, single or multi-select, and per-option price adjustments. Cart deduplication keys on item ID plus the full modifier selection, so the same item with different options gets separate entries.',
-      },
-      {
-        title: 'Real-time order dashboard',
-        desc: 'Firestore onSnapshot listeners push order updates to the admin dashboard instantly. Staff advance orders through new, preparing, ready, and completed states with a single tap.',
-      },
-      {
-        title: 'Square payment integration',
-        desc: 'The Square Web Payments SDK tokenizes cards client-side; a Firebase Cloud Function handles the server-side charge and links the Square order and payment IDs back to the Qravo order record.',
-      },
-      {
-        title: 'Per-table QR generation',
-        desc: 'The admin creates named tables and gets SVG QR codes linking directly to the menu with the table pre-filled. Scanning lands the customer on the correct restaurant and table with no manual input.',
-      },
-    ],
-    stack: ['React', 'TypeScript', 'Firebase (Firestore, Auth, Functions, Storage)', 'Square API', 'Vite', 'Tailwind CSS'],
   },
 
   'smoke-launcher': {

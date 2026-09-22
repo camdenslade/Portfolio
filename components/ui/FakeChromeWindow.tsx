@@ -17,12 +17,12 @@ type BrowserTab = {
 };
 
 const ADDRESS_TO_VIEW: Record<string, ViewState> = {
-  'cslade.space': 'portfolio',
-  'www.cslade.space': 'portfolio',
-  'cslade.space/portfolio': 'portfolio',
-  'cslade.space/pdf': 'pdf',
-  'cslade.space/files': 'files',
-  'cslade.space/smoke-launcher': 'smoke-launcher',
+  'camdenslade.com': 'portfolio',
+  'www.camdenslade.com': 'portfolio',
+  'camdenslade.com/portfolio': 'portfolio',
+  'camdenslade.com/pdf': 'pdf',
+  'camdenslade.com/files': 'files',
+  'camdenslade.com/smoke-launcher': 'smoke-launcher',
   'missouristatelacrosse.com': 'lacrosse',
   'www.missouristatelacrosse.com': 'lacrosse',
   'google.com': 'google',
@@ -30,11 +30,11 @@ const ADDRESS_TO_VIEW: Record<string, ViewState> = {
 };
 
 const viewToAddress = (view: ViewState): string => {
-  if (view === 'portfolio') return 'cslade.space';
-  if (view === 'pdf') return 'cslade.space/pdf';
+  if (view === 'portfolio') return 'camdenslade.com';
+  if (view === 'pdf') return 'camdenslade.com/pdf';
   if (view === 'lacrosse') return 'missouristatelacrosse.com';
-  if (view === 'files') return 'cslade.space/files';
-  if (view === 'smoke-launcher') return 'cslade.space/smoke-launcher';
+  if (view === 'files') return 'camdenslade.com/files';
+  if (view === 'smoke-launcher') return 'camdenslade.com/smoke-launcher';
   return 'google.com';
 };
 
@@ -69,6 +69,13 @@ export function FakeChromeWindow({
     [tabs, activeTabId]
   );
   const currentView: ViewState = activeTab?.view ?? 'google';
+  const [iframeLoaded, setIframeLoaded] = useState(false);
+
+  // The iframe remounts (key={currentView}) on every view change, so reset the
+  // spinner in lockstep rather than relying on the new iframe's onLoad alone.
+  useEffect(() => {
+    setIframeLoaded(false);
+  }, [currentView]);
 
   const setActiveView = useCallback((view: ViewState) => {
     setTabs((prev) =>
@@ -483,18 +490,42 @@ export function FakeChromeWindow({
               </div>
             </>
           ) : (
-            <iframe
-              src={
-                currentView === 'pdf' ? 'https://cslade.space/pdf' :
-                currentView === 'lacrosse' ? 'https://missouristatelacrosse.com' :
-                currentView === 'files' ? '/files' :
-                currentView === 'smoke-launcher' ? '/smoke-launcher?embed=true' :
-                'https://cslade.space/portfolio'
-              }
-              title={viewToTitle(currentView)}
-              style={{ width: '100%', flex: '1 1 0%', border: 'none', minHeight: 0 }}
-              sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-downloads"
-            />
+            <div style={{ position: 'relative', width: '100%', flex: '1 1 0%', minHeight: 0 }}>
+              <iframe
+                key={currentView}
+                src={
+                  currentView === 'pdf' ? 'https://camdenslade.com/pdf' :
+                  currentView === 'lacrosse' ? 'https://missouristatelacrosse.com' :
+                  currentView === 'files' ? '/files' :
+                  currentView === 'smoke-launcher' ? '/smoke-launcher?embed=true' :
+                  'https://camdenslade.com/portfolio'
+                }
+                title={viewToTitle(currentView)}
+                style={{ width: '100%', height: '100%', border: 'none' }}
+                sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-downloads"
+                onLoad={() => setIframeLoaded(true)}
+              />
+              {!iframeLoaded && (
+                <div
+                  style={{
+                    position: 'absolute', inset: 0,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    backgroundColor: '#ffffff',
+                  }}
+                >
+                  <span
+                    style={{
+                      width: 28,
+                      height: 28,
+                      borderRadius: '50%',
+                      border: '3px solid rgba(0,0,0,0.12)',
+                      borderTopColor: 'rgba(0,0,0,0.45)',
+                      animation: 'spin 0.8s linear infinite',
+                    }}
+                  />
+                </div>
+              )}
+            </div>
           )}
         </div>
       </section>

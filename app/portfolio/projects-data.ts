@@ -14,11 +14,11 @@ export const FLAGSHIP_PROJECTS = [
     name: 'Missouri State Lacrosse',
     initials: 'ML',
     logo: '/logos/missouri-state.png',
-    role: 'Technology Chair · Developer',
+    role: 'Software Engineer',
     period: 'Sep 2025 - Present',
     badges: ['Live', 'NonProfit'],
     summary:
-      'Built and maintained a full-stack platform serving the Missouri State University lacrosse community, including players, coaches, alumni, and family across both teams. Supports media streaming, roster management, and e-commerce for active team operations, including payment processing and merchandise fulfillment integrations.',
+      "Built and maintain a full-stack platform for my own team as a Missouri State Men's Lacrosse student-athlete, serving players, coaches, alumni, and family across both teams. Supports media streaming, roster management, and e-commerce for active team operations, having processed over $17,000 in payments and merchandise fulfillment while sustaining 100% streaming uptime during events.",
     stack: ['React', 'Spring Boot', 'Firebase Auth', 'Cloudflare', 'AWS (EC2, SES, S3)'],
     links: [
       { label: 'Site', href: 'https://missouristatelacrosse.com' },
@@ -67,18 +67,6 @@ export const PROJECT_CATEGORIES = [
           'Founder and lead developer of a location-based dating app for college communities. Shipped to the App Store with custom AWS Cognito auth flows, real-time swipe matching over a Redis-backed queue, and a NestJS + PostgreSQL backend on EC2. Discontinued in September 2026; servers decommissioned and the app removed from sale.',
         stack: ['Swift', 'SwiftUI', 'NestJS', 'PostgreSQL', 'AWS (Cognito, SNS, S3, EC2)', 'Redis'],
         links: [{ label: 'Details', href: '/portfolio/projects/even-dating' }],
-      },
-      {
-        name: 'TabUp',
-        initials: 'TU',
-        logo: '/logos/tabup.png',
-        role: 'Team Lead · API & Deployment Engineer',
-        period: 'Jan 2026 - May 2026',
-        badges: ['React Native'],
-        summary:
-          'Bill-splitting app focused on real-world usability, including receipt capture, flexible split logic, and payout-aware reminders without directly handling funds.',
-        stack: ['React Native', 'Expo', 'TypeScript', 'NestJS', 'PostgreSQL', 'AWS', 'Firebase Auth', 'Twilio SMS'],
-        links: [{ label: 'GitHub', href: 'https://github.com/camdenslade/TabUp' }, { label: 'Details', href: '/portfolio/projects/tabup' }],
       },
     ],
   },
@@ -132,7 +120,7 @@ export const PROJECT_CATEGORIES = [
         summary:
           'A GPU-accelerated reactive UI framework for Rust. Renders a declarative View tree via wgpu with SDF rounded-rect shaders, cosmic-text Glyphatlas, Taffy flexbox layout, and signal-based reactivity. Optional macOS native bridge via objc2.',
         stack: ['Rust', 'wgpu', 'WGSL', 'winit', 'taffy', 'cosmic-text', 'objc2'],
-        links: [{ label: 'GitHub', href: 'https://github.com/camdenslade/Glyph' }, { label: 'Details', href: 'https://glyph.cslade.space' }],
+        links: [{ label: 'GitHub', href: 'https://github.com/camdenslade/Glyph' }, { label: 'Details', href: 'https://glyph.camdenslade.com' }],
       },
        {
         name: 'Binate',
@@ -166,11 +154,11 @@ export const PROJECT_CATEGORIES = [
         name: 'Loro',
         initials: 'LR',
         logo: '/logos/Loro.svg',
-        role: 'Contributor',
+        role: 'Open Source Contributor',
         period: null,
         badges: ['Open Source'],
         summary:
-          'A collaborative editing library for building real-time applications with conflict-free replicated data types (CRDTs).',
+          'A collaborative editing library for building real-time applications with conflict-free replicated data types (CRDTs). Contributed to the core Rust CRDT engine by replacing a full causal-DAG oplog scan with a bounded per-peer range scan using version-vector bounds, eliminating redundant history traversal in a hot delete-lookup path.',
         stack: ['Rust'],
         links: [{ label: 'GitHub', href: 'https://github.com/loro-dev/loro' }, { label: 'Details', href: 'https://loro.dev/' }],
       }

@@ -29,9 +29,11 @@ type Props = {
   controller: IntroController;
   backOutRef: MutableRefObject<(() => void) | null>;
   isBackingOut: boolean;
+  onModelReady?: () => void;
+  onIframeLoad?: () => void;
 };
 
-export function IntroSceneMobile({ controller, backOutRef, isBackingOut }: Props) {
+export function IntroSceneMobile({ controller, backOutRef, isBackingOut, onModelReady, onIframeLoad }: Props) {
   const { camera } = useThree();
   const reducedMotion = usePrefersReducedMotion();
   const timelineRef = useRef<gsap.core.Timeline | null>(null);
@@ -141,7 +143,7 @@ export function IntroSceneMobile({ controller, backOutRef, isBackingOut }: Props
           visibility: cameraState === 'ENTER_SCREEN' && !isBackingOut ? 'hidden' : 'visible',
         }}
       >
-        <FakeSafariWindow onBack={handleBackOut} />
+        <FakeSafariWindow onBack={handleBackOut} onIframeLoad={onIframeLoad} />
       </div>
     </div>
   );
@@ -168,6 +170,7 @@ export function IntroSceneMobile({ controller, backOutRef, isBackingOut }: Props
         onOutsideScreenClick={cameraState === 'IDLE' ? startFocusFlow : handleOutsideScreenClick}
         screenOverlay={cameraState === 'ENTER_SCREEN' && !isBackingOut ? null : screenOverlay}
         floatEnabled={cameraState === 'IDLE'}
+        onReady={onModelReady}
       />
     </>
   );

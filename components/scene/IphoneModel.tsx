@@ -27,10 +27,11 @@ type IphoneModelProps = {
   onOutsideScreenClick?: () => void;
   screenOverlay?: ReactNode;
   floatEnabled?: boolean;
+  onReady?: () => void;
 };
 
 function useScreenFrontFacing(
-  groupRef: React.RefObject<Group>,
+  groupRef: React.RefObject<Group | null>,
   position: [number, number, number],
   rotation: [number, number, number]
 ) {
@@ -59,7 +60,7 @@ function useScreenFrontFacing(
   return isFrontFacing;
 }
 
-function useFloatingGroup(groupRef: React.RefObject<Group>, baseY: number, enabled: boolean) {
+function useFloatingGroup(groupRef: React.RefObject<Group | null>, baseY: number, enabled: boolean) {
   useFrame(({ clock }) => {
     if (!groupRef.current) return;
     groupRef.current.position.y = enabled
@@ -86,8 +87,15 @@ export function IphoneModel({
   onOutsideScreenClick,
   screenOverlay,
   floatEnabled = true,
+  onReady,
 }: IphoneModelProps) {
   const gltf = useGLTF(MODEL_PATH, true, true, (loader) => configureDraco(loader));
+
+  // Suspense only resolves this component once the GLTF has loaded, so mount = ready.
+  useEffect(() => {
+    onReady?.();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const scene = useMemo(() => gltf.scene.clone(), [gltf.scene]);
   const [screenMeshNames, setScreenMeshNames] = useState<Set<string>>(new Set());
   const groupRef = useRef<Group>(null);

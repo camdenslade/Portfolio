@@ -1,0 +1,23 @@
+[package]
+name = "double-ratchet-core"
+version = "0.1.0"
+edition = "2021"
+description = "A clean-room implementation of the Signal Double Ratchet algorithm."
+license = "MIT"
+
+[lib]
+name = "double_ratchet_core"
+path = "src/lib.rs"
+
+[dependencies]
+x25519-dalek = { version = "2.0", features = ["static_secrets"] }
+hkdf = "0.12"
+sha2 = "0.10"
+chacha20poly1305 = { version = "0.10", features = ["alloc"] }
+zeroize = { version = "1.7", features = ["zeroize_derive"] }
+subtle = "2.5"
+thiserror = "1.0"
+rand_core = { version = "0.6", features = ["getrandom"] }
+
+[dev-dependencies]
+# none yet — integration tests use only the public API and std

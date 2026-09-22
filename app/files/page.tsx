@@ -216,7 +216,7 @@ export default function FilesPage() {
           </table>
         )}
 
-        <div className="footer">cslade.space/files · drop files into public/shared-files/ to share</div>
+        <div className="footer">camdenslade.com/files · drop files into public/shared-files/ to share</div>
       </div>
     </>
   );

@@ -25,12 +25,13 @@ type ComputerModelProps = {
   onOutsideScreenClick?: () => void;
   screenOverlay?: ReactNode;
   floatEnabled?: boolean;
+  onReady?: () => void;
 };
 const FLOAT_AMPLITUDE = 0.035;
 const FLOAT_SPEED = 1.15;
 
 function useScreenFrontFacing(
-  groupRef: React.RefObject<Group>,
+  groupRef: React.RefObject<Group | null>,
   position: [number, number, number],
   rotation: [number, number, number]
 ) {
@@ -76,7 +77,7 @@ function isScreenLike(meshName: string, material: MeshStandardMaterial): boolean
   );
 }
 
-function useFloatingGroup(groupRef: React.RefObject<Group>, baseY: number, enabled: boolean) {
+function useFloatingGroup(groupRef: React.RefObject<Group | null>, baseY: number, enabled: boolean) {
   useFrame(({ clock }) => {
     if (!groupRef.current) return;
     groupRef.current.position.y = enabled
@@ -90,6 +91,7 @@ function LoadedComputer({
   onOutsideScreenClick,
   screenOverlay,
   floatEnabled = true,
+  onReady,
 }: ComputerModelProps) {
   const gltf = useGLTF(
     MODEL_PATH,
@@ -97,6 +99,12 @@ function LoadedComputer({
     true,
     (loader) => configureDraco(loader)
   );
+
+  // Suspense only resolves this component once the GLTF has loaded, so mount = ready.
+  useEffect(() => {
+    onReady?.();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const scene = useMemo(() => gltf.scene.clone(), [gltf.scene]);
   const [screenMeshNames, setScreenMeshNames] = useState<Set<string>>(new Set());
@@ -183,7 +191,14 @@ function PrimitiveComputer({
   onOutsideScreenClick,
   screenOverlay,
   floatEnabled = true,
+  onReady,
 }: ComputerModelProps) {
+  // No model to load for the fallback geometry, so it's ready as soon as it mounts.
+  useEffect(() => {
+    onReady?.();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // Screen box is at [0, 1.0, -0.42] with size [1.6, 1.0]
   const screenScale = 1.6 / 950;
   const groupRef = useRef<Group>(null);
@@ -241,6 +256,7 @@ export function ComputerModel({
   onOutsideScreenClick,
   screenOverlay,
   floatEnabled = true,
+  onReady,
 }: ComputerModelProps) {
   const [shouldLoadModel, setShouldLoadModel] = useState<boolean | null>(null);
 
@@ -274,6 +290,7 @@ export function ComputerModel({
         onOutsideScreenClick={onOutsideScreenClick}
         screenOverlay={screenOverlay}
         floatEnabled={floatEnabled}
+        onReady={onReady}
       />
     );
   }
@@ -284,6 +301,7 @@ export function ComputerModel({
       onOutsideScreenClick={onOutsideScreenClick}
       screenOverlay={screenOverlay}
       floatEnabled={floatEnabled}
+      onReady={onReady}
     />
   );
 }

@@ -4,26 +4,26 @@ import { useState, useCallback, useEffect, type KeyboardEvent } from 'react';
 
 export type SafariViewState = 'newtab' | 'portfolio' | 'pdf' | 'lacrosse';
 
-type Props = { onBack: () => void };
+type Props = { onBack: () => void; onIframeLoad?: () => void };
 
 const IFRAME_SRCS: Partial<Record<SafariViewState, string>> = {
-  portfolio: 'https://cslade.space/portfolio?embed=true',
-  pdf: 'https://cslade.space/pdf',
+  portfolio: 'https://camdenslade.com/portfolio?embed=true',
+  pdf: 'https://camdenslade.com/pdf',
   lacrosse: 'https://missouristatelacrosse.com',
 };
 
 const VIEW_URLS: Record<SafariViewState, string> = {
   newtab: '',
-  portfolio: 'cslade.space',
-  pdf: 'cslade.space/pdf',
+  portfolio: 'camdenslade.com',
+  pdf: 'camdenslade.com/pdf',
   lacrosse: 'missouristatelacrosse.com',
 };
 
 const URL_TO_VIEW: Record<string, SafariViewState> = {
-  'cslade.space': 'portfolio',
-  'www.cslade.space': 'portfolio',
-  'cslade.space/portfolio': 'portfolio',
-  'cslade.space/pdf': 'pdf',
+  'camdenslade.com': 'portfolio',
+  'www.camdenslade.com': 'portfolio',
+  'camdenslade.com/portfolio': 'portfolio',
+  'camdenslade.com/pdf': 'pdf',
   'missouristatelacrosse.com': 'lacrosse',
   'www.missouristatelacrosse.com': 'lacrosse',
 };
@@ -190,7 +190,7 @@ function BottomToolbar({ canGoBack, onBack, onShare }: { canGoBack: boolean; onB
   );
 }
 
-export function FakeSafariWindow({ onBack }: Props) {
+export function FakeSafariWindow({ onBack, onIframeLoad }: Props) {
   const time = useTime();
   const [view, setView] = useState<SafariViewState>('newtab');
   const [addressBar, setAddressBar] = useState('');
@@ -231,6 +231,17 @@ export function FakeSafariWindow({ onBack }: Props) {
   }, [addressBar, navigate]);
 
   const iframeSrc = view !== 'newtab' ? IFRAME_SRCS[view] : undefined;
+  const [iframeLoaded, setIframeLoaded] = useState(false);
+
+  // Reset the spinner whenever we navigate to a new iframe destination.
+  useEffect(() => {
+    setIframeLoaded(false);
+  }, [iframeSrc]);
+
+  const handleIframeLoad = useCallback(() => {
+    setIframeLoaded(true);
+    onIframeLoad?.();
+  }, [onIframeLoad]);
 
   return (
     <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', backgroundColor: '#f2f2f7', overflow: 'hidden', fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif' }}>
@@ -243,12 +254,35 @@ export function FakeSafariWindow({ onBack }: Props) {
       />
 
       {iframeSrc ? (
-        <iframe
-          src={iframeSrc}
-          title={view}
-          style={{ flex: '1 1 0%', border: 'none', minHeight: 0 }}
-          sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-downloads allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation"
-        />
+        <div style={{ position: 'relative', flex: '1 1 0%', minHeight: 0 }}>
+          <iframe
+            src={iframeSrc}
+            title={view}
+            style={{ width: '100%', height: '100%', border: 'none' }}
+            sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-downloads allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation"
+            onLoad={handleIframeLoad}
+          />
+          {!iframeLoaded && (
+            <div
+              style={{
+                position: 'absolute', inset: 0,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                backgroundColor: '#f2f2f7',
+              }}
+            >
+              <span
+                style={{
+                  width: 28,
+                  height: 28,
+                  borderRadius: '50%',
+                  border: '3px solid rgba(0,0,0,0.12)',
+                  borderTopColor: 'rgba(0,0,0,0.45)',
+                  animation: 'spin 0.8s linear infinite',
+                }}
+              />
+            </div>
+          )}
+        </div>
       ) : (
         <NewTabPage onNavigate={navigate} />
       )}

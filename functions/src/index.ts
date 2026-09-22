@@ -5,7 +5,7 @@ admin.initializeApp();
 const db = admin.firestore();
 
 export const setBadgeOverrides = onRequest(
-  { cors: ['https://cslade.space', 'https://portfolio-dae1f.web.app', 'http://localhost:3000'] },
+  { cors: ['https://camdenslade.com', 'https://portfolio-dae1f.web.app', 'http://localhost:3000'] },
   async (req, res) => {
     if (req.method === 'OPTIONS') { res.status(204).send(''); return; }
     if (req.method !== 'POST') { res.status(405).json({ error: 'Method not allowed' }); return; }

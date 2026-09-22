@@ -9,7 +9,7 @@ import type { PerspectiveCamera } from 'three';
 
 import { animateCamera, type CameraTarget } from '@/lib/three/cameraAnim';
 import { usePrefersReducedMotion } from '@/lib/three/motion';
-import { useIntroController } from './useIntroController';
+import type { IntroController } from './useIntroController';
 import { ComputerModel } from './ComputerModel';
 import { FakeChromeWindow, type ViewState } from '@/components/ui/FakeChromeWindow';
 
@@ -27,7 +27,12 @@ const CAMERA_TARGETS: Record<'FOCUS_SCREEN' | 'ENTER_SCREEN', CameraTarget> = {
   },
 };
 
-export function IntroScene() {
+type Props = {
+  controller: IntroController;
+  onModelReady?: () => void;
+};
+
+export function IntroScene({ controller, onModelReady }: Props) {
   const { camera } = useThree();
   const reducedMotion = usePrefersReducedMotion();
   const timelineRef = useRef<gsap.core.Timeline | null>(null);
@@ -40,7 +45,7 @@ export function IntroScene() {
     startFocusFlow,
     setCameraState,
     setShowFakeChrome,
-  } = useIntroController();
+  } = controller;
 
   useEffect(() => {
     if (initialTargetRef.current) return;
@@ -198,6 +203,7 @@ export function IntroScene() {
         onOutsideScreenClick={handleOutsideScreenClick}
         screenOverlay={screenOverlay}
         floatEnabled={cameraState === 'IDLE'}
+        onReady={onModelReady}
       />
     </>
   );

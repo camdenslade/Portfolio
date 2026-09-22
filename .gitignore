@@ -7,3 +7,6 @@ public/shared-files/496459763-Kotlin-Cheatsheet-1-0.pdf
 .env.local
 functions/.env
 public/shared-files/CSC455.pdf
+.DS_Store
+tsconfig.tsbuildinfo
+functions/lib/

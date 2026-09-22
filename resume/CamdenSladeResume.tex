@@ -1,0 +1,114 @@
+%==============================================================================
+%  Camden Slade - Resume
+%  Compile:  pdflatex CamdenSladeResume.tex
+%
+%  ATS-friendly: single column, standard section headings, no tables or
+%  multi-column layout for content, plain-text separators, selectable text.
+%==============================================================================
+\documentclass[letterpaper,10pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=0.5in]{geometry}
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage[hidelinks]{hyperref}
+
+\hypersetup{pdftitle={Camden Slade - Resume}, pdfauthor={Camden Slade}}
+
+\pagestyle{empty}
+\raggedright
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+
+% Section heading: bold, uppercase, rule beneath
+\titleformat{\section}{\normalsize\bfseries\uppercase}{}{0pt}{}[\vspace{1pt}\hrule\vspace{2pt}]
+\titlespacing{\section}{0pt}{6pt}{0pt}
+
+% Tight bullet lists
+\setlist[itemize]{leftmargin=1.4em, topsep=1pt, itemsep=0.5pt, parsep=0pt}
+
+% Skill row: bold label hugging its value, small gap between rows
+\newcommand{\skill}[2]{\textbf{#1:} #2\par\vspace{1.5pt}}
+
+% One job/project: \position{Title}{Detail (italic)}{Dates}
+\newcommand{\position}[3]{%
+  \vspace{4pt}%
+  {\bfseries #1}\hfill{\bfseries #3}\\[0pt]
+  \textit{#2}\par
+}
+
+\begin{document}
+
+% HEADER
+\begingroup
+\centering
+{\fontsize{26}{30}\selectfont\bfseries Camden Slade}\par
+\vspace{4pt}
+{\small
+Springfield, MO \enspace\textbar\enspace +1 417-506-9365 \enspace\textbar\enspace csladedev@outlook.com\par
+\vspace{2pt}
+cslade.space/portfolio \enspace\textbar\enspace github.com/camdenslade \enspace\textbar\enspace linkedin.com/in/camdenslade\par
+}
+\vspace{4pt}
+{\small\itshape Available January 2027 for full-time remote or Springfield-area hybrid roles (reduced course load in final semester).\par}
+\endgroup
+\vspace{2pt}
+
+% SKILLS
+\section{Skills}
+\skill{Languages}{TypeScript, Java, Rust, Go, Swift}
+\skill{Frontend}{React, React Native, SwiftUI}
+\skill{Backend}{NestJS, Spring Boot}
+\skill{Databases}{PostgreSQL, Redis, Firestore, TypeORM}
+\skill{Cloud \& DevOps}{AWS (EC2, S3, Secrets Manager, SNS, SES), Docker, PM2, GitHub Actions, Cloudflare, NGINX}
+\skill{Focus Areas}{Full-stack web \& API design, cross-platform / mobile, database architecture, cloud infrastructure, deployment automation, performance debugging, UI/UX}
+
+% EXPERIENCE
+\section{Experience}
+
+\position{Software Engineer}{Missouri State Men's Lacrosse (501(c) Nonprofit)}{September 2025 - Present}
+\begin{itemize}
+  \item Architected and maintain a full-stack production platform for team streaming, roster management, and merchandise sales, supporting 50+ active players, coaches, and alumni.
+  \item Integrated payment processing and merchandise fulfillment, processing over \$17,000.
+  \item Maintained hosting infrastructure and content delivery, sustaining 100\% streaming uptime during team events.
+  \item Stack: React, Spring Boot, Firebase Auth, Cloudflare, AWS (EC2, SES, S3).
+\end{itemize}
+
+\position{Grading Assistant}{Missouri State University, Department of Mathematics}{August 2025 - December 2025}
+\begin{itemize}
+  \item Evaluated coursework, statistical analyses, and exams for MTH 345 (Statistics for Scientists and Engineers), maintaining grading consistency across 50+ students.
+  \item Partnered directly with the course professor to diagnose common conceptual bottlenecks and provide targeted feedback on quantitative methodology and problem-solving.
+\end{itemize}
+
+% PROJECTS
+\section{Projects \& Open Source}
+
+\position{Versa}{Rust, Go, WebAssembly, UniFFI, Swift, Loro CRDTs, WebSockets}{April 2026 - May 2026}
+\begin{itemize}
+  \item Designed a real-time collaborative sync architecture in Rust using Loro CRDTs for deterministic, conflict-free document editing.
+  \item Compiled a shared Rust core across platforms via an XCFramework (UniFFI) for native iOS and a WebAssembly module (wasm-bindgen) for web clients.
+  \item Built a stateless Go WebSocket relay broadcasting binary diffs for local client-side reconciliation using version vectors.
+\end{itemize}
+
+\position{Codegraph}{TypeScript, Node.js, tree-sitter, SQLite, Model Context Protocol (MCP)}{September 2026 - Present}
+\begin{itemize}
+  \item Built a local code-graph engine using tree-sitter AST parsing and SQLite, indexing 55k+ lines of code in under 9 seconds.
+  \item Implemented a Model Context Protocol server exposing 5 structural query tools, serving depth-2 graph traversals in an average of 6 ms.
+  \item Engineered an incremental file-watcher cache to apply single-file diffs in under 1 second with no network overhead.
+\end{itemize}
+
+\position{Loro CRDT}{Rust \enspace\textbar\enspace Open Source Contributor}{}
+\begin{itemize}
+  \item Contributed to the core Rust CRDT engine by replacing a full causal-DAG oplog scan with a bounded per-peer range scan using version-vector bounds, eliminating redundant history traversal in a hot delete-lookup path.
+\end{itemize}
+
+% EDUCATION
+\section{Education}
+\vspace{4pt}
+{\bfseries Bachelor of Science in Computer Science and General Mathematics}\hfill{\bfseries Expected May 2027}\\[0pt]
+\textit{Missouri State University, Springfield, MO}\par
+
+\end{document}

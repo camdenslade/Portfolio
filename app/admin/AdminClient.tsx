@@ -13,15 +13,16 @@ const ALL_BADGES = [
 ];
 
 const ALL_PROJECTS: { name: string; category: string }[] = [
-  { name: 'Even Dating',             category: 'Flagship Projects' },
-  { name: 'Versa',                   category: 'Flagship Projects' },
   { name: 'Missouri State Lacrosse', category: 'Flagship Projects' },
-  { name: 'TabUp',                   category: 'Mobile Apps' },
+  { name: 'CodeGraph',               category: 'Flagship Projects' },
+  { name: 'Versa',                   category: 'Flagship Projects' },
+  { name: 'Even Dating',             category: 'Mobile Apps' },
   { name: 'Smoke Launcher',          category: 'Desktop' },
   { name: 'Kimbu',                   category: 'Infrastructure' },
-  { name: 'Binate',                  category: 'Open Source & Research' },
   { name: 'Glyph',                   category: 'Open Source & Research' },
+  { name: 'Binate',                  category: 'Open Source & Research' },
   { name: 'Nova Dom',                category: 'Open Source & Research' },
+  { name: 'Loro',                    category: 'Contributions' },
 ];
 
 type Overrides = Record<string, string[]>;

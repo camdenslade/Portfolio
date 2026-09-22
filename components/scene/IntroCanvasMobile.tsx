@@ -10,6 +10,7 @@ export default function IntroCanvasMobile() {
   const controller = useIntroController();
   const backOutRef = useRef<(() => void) | null>(null);
   const [isBackingOut, setIsBackingOut] = useState(false);
+  const [modelReady, setModelReady] = useState(false);
 
   // Lock body scroll while overlay is open
   useEffect(() => {
@@ -39,23 +40,42 @@ export default function IntroCanvasMobile() {
         <directionalLight position={[-2.8, 3.2, 2.4]} intensity={1.1} color="#ffffff" />
         <directionalLight position={[2.4, 2.3, 1.8]} intensity={0.7} color="#ffffff" />
         <Suspense fallback={null}>
-          <IntroSceneMobile controller={controller} backOutRef={backOutRef} isBackingOut={isBackingOut} />
+          <IntroSceneMobile
+            controller={controller}
+            backOutRef={backOutRef}
+            isBackingOut={isBackingOut}
+            onModelReady={() => setModelReady(true)}
+          />
         </Suspense>
       </Canvas>
 
-      {/* Tap hint, visible only when idle */}
+      {/* Loading spinner (until the model is ready) + tap hint, visible only when idle */}
       {controller.cameraState === 'IDLE' && (
         <div style={{
           position: 'absolute', bottom: '14%', left: 0, right: 0,
-          display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6,
+          display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14,
           pointerEvents: 'none',
           animation: 'fadeInUp 0.6s ease forwards',
         }}>
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" style={{ opacity: 0.4 }}>
-            <path d="M9 11V6a3 3 0 0 1 6 0v5" stroke="#333" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
-            <path d="M5 11h14l-1.5 9H6.5L5 11z" stroke="#333" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-          <span style={{ fontSize: 13, color: 'rgba(0,0,0,0.35)', letterSpacing: '0.02em' }}>tap the screen</span>
+          {!modelReady && (
+            <span
+              style={{
+                width: 26,
+                height: 26,
+                borderRadius: '50%',
+                border: '3px solid rgba(0,0,0,0.12)',
+                borderTopColor: 'rgba(0,0,0,0.45)',
+                animation: 'spin 0.8s linear infinite',
+              }}
+            />
+          )}
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" style={{ opacity: 0.4 }}>
+              <path d="M9 11V6a3 3 0 0 1 6 0v5" stroke="#333" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M5 11h14l-1.5 9H6.5L5 11z" stroke="#333" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+            <span style={{ fontSize: 13, color: 'rgba(0,0,0,0.35)', letterSpacing: '0.02em' }}>tap the screen</span>
+          </div>
         </div>
       )}
 

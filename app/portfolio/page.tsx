@@ -14,12 +14,12 @@ import {
 
 const EXPERIENCE = [
   {
-    role: 'Technology Chair',
-    company: 'Missouri State University Lacrosse · 501(c) NonProfit',
+    role: 'Software Engineer',
+    company: 'Missouri State Men\'s Lacrosse (501(c) Nonprofit)',
     logo: '/logos/missouri-state.png',
     period: 'Sep 2025 - Present',
     detail:
-      "Sole developer of the platform serving both the men's and women's programs, along with coaches, alumni, and family. Built and maintain media streaming, roster management, and e-commerce with payment processing, on infrastructure I designed and deployed (React, Spring Boot, Cloudflare, AWS).",
+      'Architected and maintain a full-stack production platform for team streaming, roster management, and merchandise sales, supporting 50+ active players, coaches, and alumni. Integrated payment processing and merchandise fulfillment, processing over $17,000, on infrastructure I designed and deployed while sustaining 100% streaming uptime during team events (React, Spring Boot, Cloudflare, AWS).',
   },
   {
     role: 'Grading Assistant',
@@ -27,7 +27,7 @@ const EXPERIENCE = [
     logo: '/logos/missouristate.jpeg',
     period: 'Aug 2025 - Dec 2025',
     detail:
-      'Graded MTH 345, Statistics for Scientists and Engineers, with a focus on standard probability and statistical distributions.',
+      'Evaluated coursework, statistical analyses, and exams for MTH 345, Statistics for Scientists and Engineers, maintaining grading consistency across 50+ students. Partnered directly with the course professor to diagnose common conceptual bottlenecks and provide targeted feedback on quantitative methodology and problem-solving.',
   },
 ] as const;
 
@@ -270,7 +270,7 @@ function PortfolioPage() {
           </div>
           <div className="mt-5 flex flex-wrap gap-3">
             <a
-              href="/CamdenSladeResumeSeptember.pdf"
+              href="/CamdenSladeResume.pdf"
               download
               className="inline-flex items-center gap-1.5 rounded border border-gray-200 bg-gray-50 px-3 py-1.5 text-sm text-gray-700 transition-colors hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800"
             >
@@ -368,7 +368,7 @@ function PortfolioPage() {
             </div>
             <div>
               <p className="font-semibold">Missouri State University</p>
-              <p className="mt-0.5 text-sm text-gray-500 dark:text-gray-400">B.S. Computer Science · General Mathematics</p>
+              <p className="mt-0.5 text-sm text-gray-500 dark:text-gray-400">Bachelor of Science in Computer Science and General Mathematics</p>
               <p className="mt-0.5 text-xs text-gray-400 dark:text-gray-500">Expected May 2027</p>
             </div>
           </div>

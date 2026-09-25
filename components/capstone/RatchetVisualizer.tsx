@@ -6,12 +6,19 @@ interface RatchetVisualizerProps {
   simulationState: DoubleRatchetSimulationState;
 }
 
+// Internal state uses 'Alice' | 'Bob' as plumbing identifiers; the talk's
+// prose refers to the same two parties as "User 1" and "User 2".
+const DISPLAY_NAME: Record<RatchetParticipantState['identity'], string> = {
+  Alice: 'User 1',
+  Bob: 'User 2',
+};
+
 // One participant's internal cryptographic registers.
 const ParticipantCard: React.FC<{ participant: RatchetParticipantState }> = ({ participant }) => {
   return (
     <div className="rounded-lg border border-gray-100 p-4 dark:border-gray-800">
       <div className="flex items-center justify-between">
-        <p className="font-semibold">{participant.identity}</p>
+        <p className="font-semibold">{DISPLAY_NAME[participant.identity]}</p>
         <span
           className={`text-[10px] uppercase tracking-widest ${
             participant.isCompromised

@@ -14,6 +14,12 @@ interface AdversaryHarnessProps {
   onStateChange: (newState: DoubleRatchetSimulationState) => void;
 }
 
+// Internal state/log entries use 'Alice' | 'Bob' as plumbing identifiers;
+// the talk's prose refers to the same two parties as "User 1" and "User 2".
+function toDisplayNames(text: string): string {
+  return text.replace(/\bAlice\b/g, 'User 1').replace(/\bBob\b/g, 'User 2');
+}
+
 function impactLabel(impact: AdversaryLogEntry['securityImpact']): string {
   switch (impact) {
     case 'BREACH':
@@ -39,33 +45,38 @@ type DemoStep = {
 
 const DEMO_STEPS: DemoStep[] = [
   {
-    title: 'Alice sends a message',
-    caption: "Gear 1 evaluates once. Watch Alice's sequence step to its next term and a ciphertext appear on the wire.",
+    title: 'User 1 sends a message',
+    caption: "Gear 1 evaluates once. Watch User 1's sequence step to its next term and a ciphertext appear on the wire.",
     run: (s) => advanceSymmetricStep(s, 'Alice'),
   },
   {
-    title: 'Alice sends another',
+    title: 'User 1 sends another',
     caption: 'And again. Every message gets a fresh key; the sequence only ever moves forward.',
     run: (s) => advanceSymmetricStep(s, 'Alice'),
   },
   {
-    title: 'Bob runs the Diffie-Hellman exchange',
-    caption: 'Bob picks a fresh exponent and replies. This is the exchange from the background section, run live, which also seeds a sequence of his own.',
+    title: 'User 2 runs the Diffie-Hellman exchange',
+    caption: 'User 2 picks a fresh exponent and replies. This is the exchange from the background section, run live, which also seeds a sequence of their own.',
     run: (s) => executeDHRatchetStep(s, 'Bob'),
   },
   {
-    title: 'Bob sends a message back',
-    caption: "Now Bob's Gear 1 evaluates too. Both sequences are independently stepping forward.",
+    title: 'User 2 sends a message back',
+    caption: "Now User 2's Gear 1 evaluates too. Both sequences are independently stepping forward.",
     run: (s) => advanceSymmetricStep(s, 'Bob'),
   },
   {
-    title: "Now: compromise Alice's state",
-    caption: 'This is the cold-boot attack from the introduction. Watch her box turn red. The adversary now knows her current value.',
+    title: "Now: compromise User 1's state",
+    caption: "This is the cold-boot attack from the introduction. Watch their box turn red. The adversary now knows User 1's current exponent, not just their public value.",
     run: (s) => corruptParticipantMemory(s, 'Alice'),
   },
   {
-    title: 'Alice re-seeds with a fresh exchange',
-    caption: 'One round trip. A fresh shared value gets folded into the root and Alice heals, green again, without either party restarting the conversation.',
+    title: 'User 2 replies, but the compromise is not healed yet',
+    caption: "Watch the audit trail: User 1's box stays red. The attacker still holds User 1's old exponent, so they can compute this new shared value exactly like User 1 would. This reply is still readable to the attacker.",
+    run: (s) => executeDHRatchetStep(s, 'Bob'),
+  },
+  {
+    title: 'User 1 picks a fresh exponent of their own',
+    caption: 'This is the step that actually heals the compromise. User 1 throws away the stolen exponent and picks a new one the attacker never saw, one round trip after the fresh exponent is chosen. Now the box turns green.',
     run: (s) => executeDHRatchetStep(s, 'Alice'),
   },
 ];
@@ -101,7 +112,7 @@ export const AdversaryHarness: React.FC<AdversaryHarnessProps> = ({
         </p>
         <p className="mt-1 text-[0.9375rem] leading-relaxed text-gray-600 dark:text-gray-300">
           {atEnd
-            ? 'Forward secrecy protected every message along the way, and post-compromise security locked the adversary back out in one round trip. Reset to run it again.'
+            ? "Forward secrecy protected every earlier message along the way. Post-compromise security locked the adversary back out too, but only once the compromised party picked a fresh exponent, not on the very next reply. Reset to run it again."
             : nextStep!.caption}
         </p>
 
@@ -159,7 +170,7 @@ export const AdversaryHarness: React.FC<AdversaryHarnessProps> = ({
                     {impactLabel(entry.securityImpact)}
                   </span>
                 </div>
-                <p className="mt-1 text-xs leading-relaxed text-gray-500 dark:text-gray-400">{entry.detail}</p>
+                <p className="mt-1 text-xs leading-relaxed text-gray-500 dark:text-gray-400">{toDisplayNames(entry.detail)}</p>
               </div>
             ))}
         </div>

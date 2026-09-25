@@ -171,17 +171,28 @@ export function executeDHRatchetStep(
   // commit new root and reset sending chain on sender
   activeSender.rootKey = newRoot;
   activeSender.sendingChain = { chainKey: newSendCK, stepCount: 0 };
-  // fresh entropy heals any existing memory breach
+
+  // Picking a FRESH exponent only heals the picker's own compromise. It does
+  // NOT heal the other party: an attacker who stole the receiver's OLD
+  // exponent can still combine it with this new public value and land on
+  // the same shared secret, exactly like the legitimate receiver would.
+  // Healing only actually happens once the previously-compromised party
+  // themselves runs this step and throws away the exponent the attacker had.
+  const senderWasCompromised = activeSender.isCompromised;
   activeSender.isCompromised = false;
 
-  // mirror on receiver: update remote DH key and align root/receiving chain
+  // mirror on receiver: update remote DH key and align root/receiving chain.
+  // The receiver's compromise status is untouched by the SENDER's fresh
+  // exponent, since the attacker (if they compromised the receiver) still
+  // holds the receiver's own exponent and can compute the same shared value.
   activeReceiver.dhRemotePublicKey = newDH.publicKey;
   activeReceiver.rootKey = newRoot;
   activeReceiver.receivingChain = { chainKey: newSendCK, stepCount: 0 };
-  activeReceiver.isCompromised = false;
 
-  // check if this turn resolves an active adversary compromise
+  // healing is only genuine when the party that was actually compromised is
+  // the one who just picked the fresh exponent
   const wasCompromised = state.compromisedAtEpoch !== null && state.healingEpoch === null;
+  const healingNow = wasCompromised && senderWasCompromised;
 
   // append DH transition log entry
   const newLog: AdversaryLogEntry = {
@@ -189,8 +200,12 @@ export function executeDHRatchetStep(
     epoch: nextEpoch,
     actor: sender,
     action: 'DH_RATCHET_STEP',
-    detail: `New DH exchange: fresh ephemeral ${newDH.publicKey.slice(0, 10)}... injected. RK updated. Post-Compromise Security achieved.`,
-    securityImpact: wasCompromised ? 'POST_COMPROMISE_HEALING' : 'NORMAL',
+    detail: healingNow
+      ? `${sender} picks a fresh exponent and sends ${newDH.publicKey.slice(0, 10)}.... Since the attacker never saw this new exponent, they cannot compute the new shared value. Post-compromise security achieved.`
+      : wasCompromised
+        ? `${sender} replies with ${newDH.publicKey.slice(0, 10)}..., but the attacker still holds the compromised party's OLD exponent and can compute this new shared value too. Not healed yet: this message is still readable.`
+        : `New DH exchange: fresh ephemeral ${newDH.publicKey.slice(0, 10)}... injected. RK updated.`,
+    securityImpact: healingNow ? 'POST_COMPROMISE_HEALING' : wasCompromised ? 'BREACH' : 'NORMAL',
   };
 
   const logs: AdversaryLogEntry[] = [...state.logs, newLog];
@@ -201,7 +216,7 @@ export function executeDHRatchetStep(
     epoch: nextEpoch,
     alice: isAlice ? activeSender : activeReceiver,
     bob: isAlice ? activeReceiver : activeSender,
-    healingEpoch: wasCompromised ? nextEpoch : state.healingEpoch,
+    healingEpoch: healingNow ? nextEpoch : state.healingEpoch,
     logs,
   };
 }

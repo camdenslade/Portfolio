@@ -9,14 +9,11 @@ import {
   DH_BACKGROUND,
   SYMMETRIC_RATCHET,
   DH_RATCHET,
-  CODE_SNIPPETS,
-  MATH_INTRO,
-  MATH_REDUCTION,
+  BSGS,
   type NarrativeSection,
 } from '@/lib/capstone/slidesData';
 import MathBlock from '@/components/capstone/MathBlock';
 import Prose from '@/components/capstone/Prose';
-import CodeBlock from '@/components/capstone/CodeBlock';
 import RatchetVisualizer from '@/components/capstone/RatchetVisualizer';
 import AdversaryHarness from '@/components/capstone/AdversaryHarness';
 
@@ -112,9 +109,8 @@ export const CapstoneDeck: React.FC = () => {
     { href: '#background', label: 'DH background' },
     { href: '#symmetric-ratchet', label: 'Gear 1: Forward secrecy' },
     { href: '#dh-ratchet', label: 'Gear 2: Self-healing' },
-    { href: '#the-code', label: 'The real code' },
     { href: '#live-demo', label: 'Live demo' },
-    { href: '#the-math', label: 'The math' },
+    { href: '#discrete-log', label: 'How hard is discrete log' },
   ];
 
   return (
@@ -168,34 +164,6 @@ export const CapstoneDeck: React.FC = () => {
           <Section section={SYMMETRIC_RATCHET} />
           <Section section={DH_RATCHET} />
 
-          {/* Real code */}
-          <section id="the-code" className="scroll-mt-20">
-            <p className="text-[11px] uppercase tracking-widest text-gray-400 dark:text-gray-500">
-              Not just theory
-            </p>
-            <h2 className="mt-2 text-2xl font-bold tracking-tight md:text-3xl">
-              The two gears, in actual code
-            </h2>
-            <p className="mt-4 max-w-2xl text-[0.9375rem] leading-relaxed text-gray-600 dark:text-gray-300">
-              <Prose text="Everything above is implemented below in Rust as a sideshoot of this presentation. Below are three excerpts from that implementation, each with comments explaining what a line does in plain English, not just what it's called. Following the Rust is not required to follow the rest of this talk. The full source, with tests proving forward secrecy and self-healing actually hold, is linked at the end if anybody is curious." />
-            </p>
-
-            <div className="mt-8 space-y-10">
-              {CODE_SNIPPETS.map((snippet) => (
-                <div key={snippet.id}>
-                  <div className="flex items-baseline justify-between gap-4">
-                    <p className="font-semibold">{snippet.label}</p>
-                    <span className="font-mono text-xs text-gray-400 dark:text-gray-500">{snippet.file}</span>
-                  </div>
-                  <p className="mt-1 text-[0.9375rem] leading-relaxed text-gray-600 dark:text-gray-300">
-                    <Prose text={snippet.intro} />
-                  </p>
-                  <CodeBlock code={snippet.code} />
-                </div>
-              ))}
-            </div>
-          </section>
-
           {/* Live demo */}
           <section id="live-demo" className="scroll-mt-20">
             <p className="text-[11px] uppercase tracking-widest text-gray-400 dark:text-gray-500">
@@ -203,7 +171,7 @@ export const CapstoneDeck: React.FC = () => {
             </p>
             <h2 className="mt-2 text-2xl font-bold tracking-tight md:text-3xl">Live demo</h2>
             <p className="mt-4 max-w-2xl text-[0.9375rem] leading-relaxed text-gray-600 dark:text-gray-300">
-              <Prose text="This is a live simulation of the two recurrence relations above. The walkthrough on the right runs one step at a time: watch each sequence advance a term at a time as messages are sent (Gear 1), then Alice's state gets compromised and her box turns red, exactly like the cold-boot attack from the introduction, and finally a fresh Diffie-Hellman exchange re-seeds her sequence and the state turns green again, the same self-healing round trip Gear 2 describes, running on real code." />
+              <Prose text="This is a live simulation of the two recurrence relations above. The walkthrough on the right runs one step at a time: watch each sequence advance a term at a time as messages are sent (Gear 1), then User 1's state gets compromised and their box turns red, exactly like the cold-boot attack from the introduction. Watch closely what happens next: User 2's reply alone does not clear the compromise, since the attacker still holds User 1's old exponent. Only once User 1 picks a fresh exponent of their own does the box turn green again, one round trip after that fresh exponent is chosen, the same honest self-healing timeline Gear 2 describes." />
             </p>
 
             <div className="mt-8 grid gap-8 sm:grid-cols-2">
@@ -229,42 +197,7 @@ export const CapstoneDeck: React.FC = () => {
             </div>
           </section>
 
-          {/* The math */}
-          <section id="the-math" className="scroll-mt-20">
-            <p className="text-[11px] uppercase tracking-widest text-gray-400 dark:text-gray-500">
-              The formal version
-            </p>
-            <h2 className="mt-2 text-2xl font-bold tracking-tight md:text-3xl">
-              Making the intuition precise
-            </h2>
-            <p className="mt-4 max-w-2xl text-[0.9375rem] leading-relaxed text-gray-600 dark:text-gray-300">
-              <Prose text={MATH_INTRO.text} />
-            </p>
-
-            <div className="mt-8 space-y-8">
-              <div>
-                <p className="text-[0.9375rem] leading-relaxed text-gray-600 dark:text-gray-300">
-                  <Prose text={MATH_REDUCTION.statement} />
-                </p>
-                <div className="mt-3 overflow-x-auto rounded-lg border border-gray-100 bg-gray-50 px-4 py-3 dark:border-gray-800 dark:bg-gray-900">
-                  <MathBlock math={MATH_REDUCTION.math} block />
-                </div>
-                <p className="mt-3 text-[0.9375rem] italic leading-relaxed text-gray-500 dark:text-gray-400">
-                  <Prose text={MATH_REDUCTION.plainEnglish} />
-                </p>
-              </div>
-
-              <div>
-                <p className="font-semibold">And the self-healing guarantee, stated formally</p>
-                <div className="mt-3 overflow-x-auto rounded-lg border border-gray-100 bg-gray-50 px-4 py-3 dark:border-gray-800 dark:bg-gray-900">
-                  <MathBlock math={MATH_REDUCTION.healing.math} block />
-                </div>
-                <p className="mt-3 text-[0.9375rem] italic leading-relaxed text-gray-500 dark:text-gray-400">
-                  <Prose text={MATH_REDUCTION.healing.plainEnglish} />
-                </p>
-              </div>
-            </div>
-          </section>
+          <Section section={BSGS} />
         </div>
 
       </div>

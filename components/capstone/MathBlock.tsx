@@ -38,7 +38,7 @@ export const MathBlock: React.FC<MathBlockProps> = ({
   return (
     <span
       ref={containerRef}
-      className={`inline-block font-serif ${block ? 'my-2 block w-full text-center overflow-x-auto py-1' : ''} ${className}`}
+      className={`font-serif ${block ? 'my-2 block w-full text-center overflow-x-auto py-1' : 'inline whitespace-nowrap'} ${className}`}
       />
   );
 };

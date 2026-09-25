@@ -131,12 +131,14 @@ export const DH_RATCHET: NarrativeSection = {
     },
     {
       heading: 'The attacker is still in, for one more message',
-      text: 'User 2 replies next, picking a fresh exponent $b\' = ?$ under the old design, but suppose for a moment they just reuse the exchange as before and send public value 19. The attacker, holding the stolen $a = 6$, computes $19^6 \\bmod 23$ exactly the way User 1 would, landing on the same shared value 2. Stealing $a$ is enough to keep reading anything derived from it, for as long as $a$ stays the exponent in use. This is the honest part the earlier draft skipped: the very next message after a break-in can still be read.',
+      text: 'User 2 replies next, picking a fresh exponent $b\' = ?$ under the old design, but suppose for a moment they just reuse the exchange as before and send public value 19. The attacker, holding the stolen $a = 6$, computes $19^6 \\bmod 23$ exactly the way User 1 would. Written out: $19^6 \\equiv (5^{15})^6 = 5^{90}$, and since $90 = 4 \\cdot 22 + 2$, that\'s $5^2 = 25 \\equiv 2 \\pmod{23}$, the same shared value 2, no mystery arithmetic involved. Stealing $a$ is enough to keep reading anything derived from it, for as long as $a$ stays the exponent in use. This is the honest part the earlier draft skipped: the very next message after a break-in can still be read.',
+      math: '19^{6} \\equiv (5^{15})^{6} = 5^{90} \\equiv 5^{2} = 25 \\equiv 2 \\pmod{23}',
+      isBlockMath: true,
     },
     {
       heading: 'The fix: a fresh exponent from the compromised side',
-      text: 'What actually locks the attacker out is not Bob replying, it is User 1 picking a brand-new exponent of their own. Say User 1 picks $a\' = 9$ and sends the new public value $5^9 \\bmod 23 = 11$. The new shared value is $19^9 \\bmod 23$, and since $9 \\cdot 15 = 135 = 6 \\cdot 22 + 3$, that equals $5^3 = 10$. The attacker has now seen the public values 19 and 11 cross the channel, but they know neither exponent 15 nor the new exponent 9, so they cannot compute $19^9$ or $11^{15}$ themselves.',
-      math: '5^{9} \\equiv 11, \\qquad 19^{9} \\equiv 5^{135} \\equiv 5^{3} = 10 \\pmod{23}',
+      text: 'What actually locks the attacker out is not Bob replying, it is User 1 picking a brand-new exponent of their own. Say User 1 picks $a\' = 9$ and sends the new public value $5^9 \\bmod 23$. Working that out one squaring at a time: $5^2 \\equiv 25 \\equiv 2$, so $5^4 \\equiv 2^2 = 4$, so $5^8 \\equiv 4^2 = 16$, and then $5^9 = 5^8 \\cdot 5 \\equiv 16 \\cdot 5 = 80 \\equiv 80 - 69 = 11 \\pmod{23}$. So the new public value is 11. The new shared value is $19^9 \\bmod 23$, and since $9 \\cdot 15 = 135 = 6 \\cdot 22 + 3$, that reduces to $5^3 = 125$, and $125 = 5 \\cdot 23 + 10$, so $5^3 \\equiv 10 \\pmod{23}$. The attacker has now seen the public values 19 and 11 cross the channel, but they know neither exponent 15 nor the new exponent 9, so they cannot compute $19^9$ or $11^{15}$ themselves.',
+      math: '5^{9} \\equiv 5^{8}\\cdot 5 \\equiv 16 \\cdot 5 = 80 \\equiv 11, \\qquad 19^{9} \\equiv 5^{135} \\equiv 5^{3} = 125 = 5(23)+10 \\equiv 10 \\pmod{23}',
       isBlockMath: true,
     },
     {

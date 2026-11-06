@@ -33,16 +33,16 @@ function generateMockKeyPair(party: string, index: number): DHKeyPair {
 export function initSimulation(): DoubleRatchetSimulationState {
   // derive synchronized master root key
   const sharedRoot = mockHash('k_root_init_shared');
-  // set Bob's base epoch-0 as asymmetric pair
-  const bobDH = generateMockKeyPair('Bob', 0);
-  // now alice
-  const aliceDH = generateMockKeyPair('Alice', 0);
+  // set User 2's base epoch-0 as asymmetric pair
+  const user2DH = generateMockKeyPair('User 2', 0);
+  // now User 1
+  const user1DH = generateMockKeyPair('User 1', 0);
 
-  // init Alice's participant state
-  const alice: RatchetParticipantState = {
-    identity: 'Alice',
-    dhKeyPair: aliceDH,
-    dhRemotePublicKey: bobDH.publicKey,
+  // init User 1's participant state
+  const user1: RatchetParticipantState = {
+    identity: 'User 1',
+    dhKeyPair: user1DH,
+    dhRemotePublicKey: user2DH.publicKey,
     rootKey: sharedRoot,
     sendingChain: { chainKey: mockHash(`${sharedRoot}_send`), stepCount: 0 },
     receivingChain: null,
@@ -50,11 +50,11 @@ export function initSimulation(): DoubleRatchetSimulationState {
     isCompromised: false,
   };
 
-  // init Bob's participant state
-  const bob: RatchetParticipantState = {
-    identity: 'Bob',
-    dhKeyPair: bobDH,
-    dhRemotePublicKey: aliceDH.publicKey,
+  // init User 2's participant state
+  const user2: RatchetParticipantState = {
+    identity: 'User 2',
+    dhKeyPair: user2DH,
+    dhRemotePublicKey: user1DH.publicKey,
     rootKey: sharedRoot,
     sendingChain: null,
     receivingChain: { chainKey: mockHash(`${sharedRoot}_send`), stepCount: 0 },
@@ -65,8 +65,8 @@ export function initSimulation(): DoubleRatchetSimulationState {
   // return the fully bootstrapped initial sim container
   return {
     epoch: 0,
-    alice,
-    bob,
+    user1,
+    user2,
     wireCiphertext: null,
     compromisedAtEpoch: null,
     healingEpoch: null,
@@ -74,7 +74,7 @@ export function initSimulation(): DoubleRatchetSimulationState {
       {
         id: 'init-0',
         epoch: 0,
-        actor: 'Alice',
+        actor: 'User 1',
         action: 'INIT_SESSION',
         detail: 'Shared root key established via initial authenticated key exchange',
         securityImpact: 'NORMAL',
@@ -86,12 +86,12 @@ export function initSimulation(): DoubleRatchetSimulationState {
 // advances the symmetric KDF ratchet by one tick demonstrating Forward Secrecy
 export function advanceSymmetricStep(
   state: DoubleRatchetSimulationState,
-  sender: 'Alice' | 'Bob'
+  sender: 'User 1' | 'User 2'
 ): DoubleRatchetSimulationState {
   const nextEpoch = state.epoch + 1;
-  const isAlice = sender === 'Alice';
-  const senderState = isAlice ? { ...state.alice } : { ...state.bob };
-  const recieverState = isAlice ? { ...state.bob } : { ...state.alice };
+  const isUser1 = sender === 'User 1';
+  const senderState = isUser1 ? { ...state.user1 } : { ...state.user2 };
+  const recieverState = isUser1 ? { ...state.user2 } : { ...state.user1 };
 
   // guard against stepping into an uninitialized pipeline
   if (!senderState.sendingChain || !recieverState.receivingChain) {
@@ -131,8 +131,8 @@ export function advanceSymmetricStep(
   return {
     ...state,
     epoch: nextEpoch,
-    alice: isAlice ? senderState : recieverState,
-    bob: isAlice ? recieverState : senderState,
+    user1: isUser1 ? senderState : recieverState,
+    user2: isUser1 ? recieverState : senderState,
     wireCiphertext: {
       sender,
       ephemeralPublicKey: senderState.dhKeyPair.publicKey,
@@ -147,12 +147,12 @@ export function advanceSymmetricStep(
 // execute an asymmetric DH ratchet turn to inject fresh entropy and demonstrate Post-Compromise Security
 export function executeDHRatchetStep(
   state: DoubleRatchetSimulationState,
-  sender: 'Alice' | 'Bob'
+  sender: 'User 1' | 'User 2'
 ): DoubleRatchetSimulationState {
   const nextEpoch = state.epoch + 1;
-  const isAlice = sender === 'Alice';
-  const activeSender = isAlice ? { ...state.alice } : { ...state.bob };
-  const activeReceiver = isAlice ? { ...state.bob } : { ...state.alice };
+  const isUser1 = sender === 'User 1';
+  const activeSender = isUser1 ? { ...state.user1 } : { ...state.user2 };
+  const activeReceiver = isUser1 ? { ...state.user2 } : { ...state.user1 };
 
   // generate new ephemeral DH key pair for the sender
   const newDH = generateMockKeyPair(sender, nextEpoch);
@@ -214,8 +214,8 @@ export function executeDHRatchetStep(
   return {
     ...state,
     epoch: nextEpoch,
-    alice: isAlice ? activeSender : activeReceiver,
-    bob: isAlice ? activeReceiver : activeSender,
+    user1: isUser1 ? activeSender : activeReceiver,
+    user2: isUser1 ? activeReceiver : activeSender,
     healingEpoch: healingNow ? nextEpoch : state.healingEpoch,
     logs,
   };
@@ -224,11 +224,11 @@ export function executeDHRatchetStep(
 // simulate adversary memory exfiltration (e.g. cold-boot attack or heap inspection)
 export function corruptParticipantMemory(
   state: DoubleRatchetSimulationState,
-  target: 'Alice' | 'Bob'
+  target: 'User 1' | 'User 2'
 ): DoubleRatchetSimulationState {
   const nextEpoch = state.epoch + 1;
-  const isAlice = target === 'Alice';
-  const targetState = isAlice ? { ...state.alice } : { ...state.bob };
+  const isUser1 = target === 'User 1';
+  const targetState = isUser1 ? { ...state.user1 } : { ...state.user2 };
 
   // flag target memory as leaked to adversary
   targetState.isCompromised = true;
@@ -249,8 +249,8 @@ export function corruptParticipantMemory(
   return {
     ...state,
     epoch: nextEpoch,
-    alice: isAlice ? targetState : state.alice,
-    bob: isAlice ? state.bob : targetState,
+    user1: isUser1 ? targetState : state.user1,
+    user2: isUser1 ? state.user2 : targetState,
     compromisedAtEpoch: nextEpoch,
     healingEpoch: null,
     logs,

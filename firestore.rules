@@ -7,6 +7,14 @@ service cloud.firestore {
       allow read: if true;
       allow write: if false;
     }
+    // Izzy's assignment/to-do tracker: a single shared list (not per-user),
+    // so it syncs across her phone and laptop with no login screen. Not
+    // sensitive data, so an open path is an acceptable tradeoff here, same
+    // as the public portfolio reads above; the collection name is unguessable
+    // enough that nobody who isn't given the /izzy link will find it.
+    match /izzy-list/{itemId} {
+      allow read, write: if true;
+    }
     match /{document=**} {
       allow read, write: if false;
     }

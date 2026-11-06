@@ -18,8 +18,8 @@ export const FLAGSHIP_PROJECTS = [
     period: 'Sep 2025 - Present',
     badges: ['Live', 'NonProfit'],
     summary:
-      "Built and maintain a full-stack platform for my own team as a Missouri State Men's Lacrosse student-athlete, serving players, coaches, alumni, and family across both teams. Supports media streaming, roster management, and e-commerce for active team operations, having processed over $17,000 in payments and merchandise fulfillment while sustaining 100% streaming uptime during events.",
-    stack: ['React', 'Spring Boot', 'Firebase Auth', 'Cloudflare', 'AWS (EC2, SES, S3)'],
+      "Built and maintain a full-stack platform for my own team as a Missouri State Men's Lacrosse student-athlete, serving players, coaches, alumni, and family across both teams. Supports media streaming, roster management, and e-commerce for active team operations, having processed over $50,000 in payments and merchandise fulfillment while sustaining 100% streaming uptime during events. Also built LaxPay, an iOS and Android Tap to Pay app built on the platform's API that has handled 95+ transactions totaling over $2,800 at team events.",
+    stack: ['React', 'Spring Boot', 'Stripe Terminal', 'Cloudflare', 'AWS (EC2, Secrets Manager, SES, S3, Cognito, CloudFront, Systems Manager, Lambda)'],
     links: [
       { label: 'Site', href: 'https://missouristatelacrosse.com' },
       { label: 'GitHub', href: 'https://github.com/camdenslade/missouristatelacrosse' },
@@ -47,7 +47,7 @@ export const FLAGSHIP_PROJECTS = [
     badges: ['In Progress', 'iOS'],
     summary:
       'A real-time collaborative sync architecture built on top of Loro CRDTs. A single Rust core compiles to both a Swift XCFramework (via UniFFI) and a WASM module (via wasm-bindgen), sharing identical conflict-resolution logic across iOS and web. A stateless Go WebSocket relay fans out binary diffs; each client merges them locally using version vectors so only deltas travel the wire.',
-    stack: ['Go', 'Rust', 'Swift', 'SwiftUI', 'UniFFI', 'WASM', 'wasm-bindgen', 'Loro CRDTs', 'PostgreSQL'],
+    stack: ['Go', 'Rust', 'Swift', 'SwiftUI', 'UniFFI', 'WASM', 'wasm-bindgen', 'Loro CRDTs', 'WebSockets', 'PostgreSQL'],
     links: [{ label: 'GitHub', href: 'https://github.com/camdenslade/versa' }, { label: 'Details', href: '/portfolio/projects/versa' }],
   },
 ];

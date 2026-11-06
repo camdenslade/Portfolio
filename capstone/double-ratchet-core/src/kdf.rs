@@ -119,7 +119,7 @@ mod tests {
         let ck0 = [5u8; 32];
         let (ck1, mk1) = kdf_ck(&ck0);
         let (ck1_again, mk1_again) = kdf_ck(&ck0);
-        // Same input -> same output (needed for Alice and Bob to agree).
+        // Same input -> same output (needed for User 1 and User 2 to agree).
         assert_eq!(ck1, ck1_again);
         assert_eq!(mk1, mk1_again);
 

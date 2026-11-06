@@ -86,7 +86,7 @@ const PROJECTS = {
       { label: 'Site', href: 'https://missouristatelacrosse.com' },
       { label: 'GitHub', href: 'https://github.com/camdenslade/missouristatelacrosse' },
     ],
-    overview: `Missouri State Lacrosse is a full-stack web platform I built and maintain as a player and Technology Chair for the Missouri State University lacrosse program - a 501(c) nonprofit serving both the men's and women's teams, along with coaches, alumni, and family.\n\nThe platform is actively used for team operations including media, roster management, e-commerce, and communications, having processed over $17,000 in payments and merchandise fulfillment while sustaining 100% streaming uptime during team events. Everything runs on infrastructure I designed and deployed.`,
+    overview: `Missouri State Lacrosse is a full-stack web platform I built and maintain as a player and Technology Chair for the Missouri State University lacrosse program - a 501(c) nonprofit serving both the men's and women's teams, along with coaches, alumni, and family.\n\nThe platform is actively used for team operations including media, roster management, e-commerce, and communications, having processed over $50,000 in payments and merchandise fulfillment while sustaining 100% streaming uptime during team events. Everything runs on infrastructure I designed and deployed.\n\nI also built LaxPay, a small iOS and Android app built on the platform's API so the team can take tap-to-pay card payments at in-person events, which has handled 95+ transactions totaling over $2,800 so far.`,
     highlights: [
       {
         title: 'Media streaming',
@@ -98,14 +98,19 @@ const PROJECTS = {
       },
       {
         title: 'E-commerce & merchandise',
-        desc: 'Integrated payment processing and merchandise fulfillment for team gear and apparel, processing over $17,000 to date. Orders flow through to a fulfillment backend without manual intervention.',
+        desc: 'Integrated payment processing and merchandise fulfillment for team gear and apparel, processing over $50,000 to date. Orders flow through to a fulfillment backend without manual intervention.',
+      },
+      {
+        title: 'Tap to Pay at events',
+        desc: 'I built LaxPay, a lightweight iOS and Android app that lets the team accept contactless cards and digital wallets on a phone at events with no extra hardware. I designed its API contracts against the platform\'s existing backend, set up Stripe Terminal and secured Apple\'s Tap to Pay distribution entitlement, carried the website\'s design system over to the app, and rolled it out at team events. Each event\'s items and unpaid registrants come straight from the same backend that powers the website, alongside cash sales and emailed receipts. It has handled 95+ transactions totaling over $2,800 across several events. Screenshots use placeholder data.',
       },
       {
         title: 'Multi-team support',
         desc: 'The platform serves both the men\'s and women\'s programs under a single deployment, with role-based access so each team manages its own content independently.',
       },
     ],
-    stack: ['React', 'Spring Boot', 'Firebase Auth', 'Cloudflare', 'AWS (EC2, SES, S3)'],
+    stack: ['React', 'Spring Boot', 'Stripe Terminal', 'Cloudflare', 'AWS (EC2, Secrets Manager, SES, S3, Cognito, CloudFront, Systems Manager, Lambda)'],
+    screenshots: ['/missouri-state-lacrosse/pos-1.jpg', '/missouri-state-lacrosse/pos-2.jpg', '/missouri-state-lacrosse/pos-3.jpg', '/missouri-state-lacrosse/pos-4.jpg'],
   },
 
   'nova-dom': {
@@ -198,7 +203,7 @@ const PROJECTS = {
         desc: 'TaskEngine runs all CRDT operations on a background Task to avoid blocking the main thread. RelayTransport is a Swift actor with auto-reconnect and 4-byte length-prefixed framing for the WebSocket wire format.',
       },
     ],
-    stack: ['Go', 'Rust', 'Swift', 'SwiftUI', 'UniFFI', 'WASM', 'wasm-bindgen', 'Loro CRDTs', 'PostgreSQL'],
+    stack: ['Go', 'Rust', 'Swift', 'SwiftUI', 'UniFFI', 'WASM', 'wasm-bindgen', 'Loro CRDTs', 'WebSockets', 'PostgreSQL'],
   },
 
   'smoke-launcher': {

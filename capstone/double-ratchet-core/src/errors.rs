@@ -38,8 +38,8 @@ pub enum RatchetError {
     SerializationError(&'static str),
 
     /// Attempted to encrypt or decrypt before the session has a chain key
-    /// established in that direction (e.g. Bob trying to send before he
-    /// has received Alice's first message).
+    /// established in that direction (e.g. User 2 trying to send before he
+    /// has received User 1's first message).
     #[error("no {0} chain key established for this session")]
     ChainNotInitialized(&'static str),
 }

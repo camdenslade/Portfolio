@@ -19,7 +19,7 @@ const EXPERIENCE = [
     logo: '/logos/missouri-state.png',
     period: 'Sep 2025 - Present',
     detail:
-      'Architected and maintain a full-stack production platform for team streaming, roster management, and merchandise sales, supporting 50+ active players, coaches, and alumni. Integrated payment processing and merchandise fulfillment, processing over $17,000, on infrastructure I designed and deployed while sustaining 100% streaming uptime during team events (React, Spring Boot, Cloudflare, AWS).',
+      'Architected and maintain a full-stack production platform for team streaming, roster management, and merchandise sales, supporting 50+ active players, coaches, and alumni. Integrated payment processing and merchandise fulfillment, processing over $50,000, on infrastructure I designed and deployed while sustaining 100% streaming uptime during team events (React, Spring Boot, Cloudflare, AWS).',
   },
   {
     role: 'Grading Assistant',
@@ -270,7 +270,7 @@ function PortfolioPage() {
           </div>
           <div className="mt-5 flex flex-wrap gap-3">
             <a
-              href="/CamdenSladeResume.pdf"
+              href="/CamSladeResumeOct.pdf"
               download
               className="inline-flex items-center gap-1.5 rounded border border-gray-200 bg-gray-50 px-3 py-1.5 text-sm text-gray-700 transition-colors hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800"
             >

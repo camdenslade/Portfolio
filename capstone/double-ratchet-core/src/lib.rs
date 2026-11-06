@@ -16,15 +16,15 @@
 //!
 //! // Stand-in for the output of an X3DH handshake.
 //! let shared_root = [0u8; 32];
-//! let bob_private = StaticSecret::random_from_rng(OsRng);
-//! let bob_public = PublicKey::from(&bob_private);
+//! let User 2_private = StaticSecret::random_from_rng(OsRng);
+//! let User 2_public = PublicKey::from(&User 2_private);
 //!
-//! let mut bob = SessionState::init_bob(shared_root, (bob_private, bob_public));
-//! let mut alice = SessionState::init_alice(shared_root, bob_public);
+//! let mut User 2 = SessionState::init_User 2(shared_root, (User 2_private, User 2_public));
+//! let mut User 1 = SessionState::init_User 1(shared_root, User 2_public);
 //!
-//! let (header, ciphertext) = alice.ratchet_encrypt(b"hello, bob", b"").unwrap();
-//! let plaintext = bob.ratchet_decrypt(&header, &ciphertext, b"").unwrap();
-//! assert_eq!(plaintext, b"hello, bob");
+//! let (header, ciphertext) = User 1.ratchet_encrypt(b"hello, User 2", b"").unwrap();
+//! let plaintext = User 2.ratchet_decrypt(&header, &ciphertext, b"").unwrap();
+//! assert_eq!(plaintext, b"hello, User 2");
 //! ```
 
 mod errors;

@@ -12,7 +12,7 @@ export interface DHKeyPair {
 }
 
 export interface RatchetParticipantState {
-  identity: 'Alice' | 'Bob';
+  identity: 'User 1' | 'User 2';
   // Asymmetric state
   dhKeyPair: DHKeyPair;
   dhRemotePublicKey: CurvePoint | null;
@@ -35,7 +35,7 @@ export type AdversaryActionType =
 export interface AdversaryLogEntry {
   id: string;
   epoch: number;
-  actor: 'Alice' | 'Bob' | 'Adversary';
+  actor: 'User 1' | 'User 2' | 'Adversary';
   action: string;
   detail: string;
   securityImpact: 'NORMAL' | 'FORWARD_SECRECY_TEST' | 'POST_COMPROMISE_HEALING' | 'BREACH';
@@ -43,10 +43,10 @@ export interface AdversaryLogEntry {
 
 export interface DoubleRatchetSimulationState {
   epoch: number;
-  alice: RatchetParticipantState;
-  bob: RatchetParticipantState;
+  user1: RatchetParticipantState;
+  user2: RatchetParticipantState;
   wireCiphertext: {
-    sender: 'Alice' | 'Bob';
+    sender: 'User 1' | 'User 2';
     ephemeralPublicKey: CurvePoint;
     messageIndex: number;
     ciphertextHex: string;

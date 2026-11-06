@@ -7,15 +7,15 @@ Source for Camden Slade's resume.
 Requires a LaTeX distribution (TeX Live / MacTeX):
 
 ```sh
-pdflatex CamdenSladeResume.tex
+pdflatex CamSladeResumeOct.tex
 # or
-latexmk -pdf CamdenSladeResume.tex
+latexmk -pdf CamSladeResumeOct.tex
 ```
 
-Produces `CamdenSladeResume.pdf`. The portfolio site serves its own copy at
-`public/CamdenSladeResumeSeptember.pdf` (linked from the portfolio hero) — copy
+Produces `CamSladeResumeOct.pdf`. The portfolio site serves its own copy at
+`public/CamSladeResumeOctSeptember.pdf` (linked from the portfolio hero) — copy
 the built PDF there when updating:
 
 ```sh
-cp CamdenSladeResume.pdf ../public/CamdenSladeResumeSeptember.pdf
+cp CamSladeResumeOct.pdf ../public/CamSladeResumeOctSeptember.pdf
 ```

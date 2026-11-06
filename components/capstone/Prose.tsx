@@ -3,7 +3,7 @@
 import MathBlock from '@/components/capstone/MathBlock';
 
 // Renders a string that may contain inline math delimited by $...$, e.g.
-// "Alice publishes $g^a$ over the open channel." Splits on the delimiter
+// "User 1 publishes $g^a$ over the open channel." Splits on the delimiter
 // and renders each math span through KaTeX inline, everything else as
 // plain text. Lets prose in slidesData.ts reference variables like $a$,
 // $CK_i$, or $g^{ab}$ and have them actually typeset instead of showing

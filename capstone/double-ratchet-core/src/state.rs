@@ -76,7 +76,7 @@ impl Header {
 /// that chain. A message is uniquely identified by (chain, index).
 type SkippedKeyId = ([u8; 32], u32);
 
-/// Full session state for one party (Alice or Bob) in an active double
+/// Full session state for one party (User 1 or User 2) in an active double
 /// ratchet session.
 ///
 /// All secret material (`root_key`, both chain keys, and every cached
@@ -96,7 +96,7 @@ pub struct SessionState {
     dh_self_private: StaticSecret,
 
     /// The remote party's most recently observed DH ratchet public key.
-    /// `None` only in the brief window before Bob has received Alice's
+    /// `None` only in the brief window before User 2 has received User 1's
     /// first message.
     dh_remote: Option<PublicKey>,
 
@@ -104,8 +104,8 @@ pub struct SessionState {
     root_key: [u8; 32],
 
     /// Sending chain key. `None` until this party has something to derive
-    /// a chain from (mirrors the spec: Bob has no sending chain until he
-    /// has received and processed Alice's first message).
+    /// a chain from (mirrors the spec: User 2 has no sending chain until he
+    /// has received and processed User 1's first message).
     chain_key_send: Option<[u8; 32]>,
     /// Receiving chain key, symmetric counterpart to `chain_key_send`.
     chain_key_recv: Option<[u8; 32]>,
@@ -140,24 +140,24 @@ impl Drop for SessionState {
 }
 
 impl SessionState {
-    /// Alice's side of session setup, run immediately after an X3DH
-    /// handshake has produced `shared_root`. Alice performs an initial DH
-    /// ratchet turn against Bob's published signed prekey so her very
+    /// User 1's side of session setup, run immediately after an X3DH
+    /// handshake has produced `shared_root`. User 1 performs an initial DH
+    /// ratchet turn against User 2's published signed prekey so her very
     /// first message already carries fresh sending-chain entropy.
     ///
-    /// Returns the initialized session plus nothing else — Alice's first
+    /// Returns the initialized session plus nothing else — User 1's first
     /// header is produced by her first call to `ratchet_encrypt`.
-    pub fn init_alice(shared_root: [u8; 32], bob_dh_public: PublicKey) -> Self {
+    pub fn init_User 1(shared_root: [u8; 32], User 2_dh_public: PublicKey) -> Self {
         let dh_self_private = StaticSecret::random_from_rng(OsRng);
         let dh_self_public = PublicKey::from(&dh_self_private);
 
-        let dh_out = dh_self_private.diffie_hellman(&bob_dh_public);
+        let dh_out = dh_self_private.diffie_hellman(&User 2_dh_public);
         let (root_key, chain_key_send) = kdf_rk(&shared_root, dh_out.as_bytes());
 
         SessionState {
             dh_self_public,
             dh_self_private,
-            dh_remote: Some(bob_dh_public),
+            dh_remote: Some(User 2_dh_public),
             root_key,
             chain_key_send: Some(chain_key_send),
             chain_key_recv: None,
@@ -168,12 +168,12 @@ impl SessionState {
         }
     }
 
-    /// Bob's side of session setup. Bob does not know Alice's DH public key
+    /// User 2's side of session setup. User 2 does not know User 1's DH public key
     /// yet — he starts with no sending chain and no remote key, and both
     /// become populated the first time `ratchet_decrypt` processes a
-    /// message from Alice (which performs Bob's first DH ratchet turn).
-    pub fn init_bob(shared_root: [u8; 32], bob_dh_keypair: (StaticSecret, PublicKey)) -> Self {
-        let (dh_self_private, dh_self_public) = bob_dh_keypair;
+    /// message from User 1 (which performs User 2's first DH ratchet turn).
+    pub fn init_User 2(shared_root: [u8; 32], User 2_dh_keypair: (StaticSecret, PublicKey)) -> Self {
+        let (dh_self_private, dh_self_public) = User 2_dh_keypair;
         SessionState {
             dh_self_public,
             dh_self_private,

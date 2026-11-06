@@ -38,6 +38,22 @@ body {
   to   { transform: rotate(360deg); }
 }
 
+@keyframes izzyFloat {
+  0%   { transform: translate(0, 0) rotate(0deg); }
+  50%  { transform: translate(6px, -14px) rotate(6deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+.izzy-float {
+  animation: izzyFloat 7s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .izzy-float {
+    animation: none;
+  }
+}
+
 /* Shiki dual-theme code blocks (capstone page): each token carries both a
    --shiki-light and --shiki-dark color; swap which one is live based on
    the same .dark class the rest of the site's theme toggle already sets. */
